@@ -1,12 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: codeator
- * Date: 13.10.16
- * Time: 19:16
- */
 
-namespace Codeator\Table;
+namespace Merkeleon\Table;
+
 
 abstract class Filter
 {
@@ -33,7 +28,7 @@ abstract class Filter
             }
         }
 
-        $className = 'Codeator\Table\Filter\\' . ucfirst(camel_case($type . 'Filter'));
+        $className = 'Merkeleon\Table\Filter\\' . ucfirst(camel_case($type . 'Filter'));
 
         $filter = self::createFilter($name, $params, $className);
 

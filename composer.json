@@ -1,7 +1,7 @@
 {
-  "name": "codeator/laravel-table",
+  "name": "merkeleon/laravel-table",
   "description": "Table functionality for Laravel collections",
-  "keywords": ["laravel","table","html","model","sorting","filtering"],
+  "keywords": ["laravel","table","html","model","sorting","filtering", "merkeleon"],
   "license": "MIT",
   "authors": [
     {
@@ -20,7 +20,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Codeator\\Table\\": "src/"
+      "Merkeleon\\Table\\": "src/"
     }
   }
 }

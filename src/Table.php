@@ -1,14 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: codeator
- * Date: 13.10.16
- * Time: 13:30
- */
 
-namespace Codeator\Table;
-
-use Request;
+namespace Merkeleon\Table;
 
 
 class Table
@@ -127,12 +119,12 @@ class Table
 
         $result = $this->model->paginate($this->itemsPerPage);
         $this->rows = $result;
-        $this->pagination = $result->appends(\Request::input());
+        $this->pagination = $result->appends(request()->all());
     }
 
     protected function prepareExporters()
     {
-        if ($exporterType = \Request::input('export_to')) {
+        if ($exporterType = request('export_to')) {
             $exporter = Exporter::make($exporterType, array_keys($this->columns));
             $exporter->export($this->model);
         }
@@ -188,11 +180,11 @@ class Table
 
     protected function runBatch()
     {
-        if (\Request::has('batch_action')) {
-            if ($action = array_get($this->batchActions, \Request::get('batch'))) {
+        if (request()->has('batch_action')) {
+            if ($action = array_get($this->batchActions, request()->get('batch'))) {
                 $query = clone $this->model;
-                if (\Request::has('batch_with')) {
-                    $ids = \Request::get('b');
+                if (request()->has('batch_with')) {
+                    $ids = request()->get('b');
                     $query->whereIn('id', $ids);
                 }
                 $action($query);
@@ -234,8 +226,8 @@ class Table
 
     protected function setupTable()
     {
-        $this->orderField = Request::input('orderField', $this->orderField);
-        $this->orderDirection = Request::input('orderDirection', $this->orderDirection);
+        $this->orderField = request('orderField', $this->orderField);
+        $this->orderDirection = request('orderDirection', $this->orderDirection);
 
         return $this;
     }

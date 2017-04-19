@@ -4,15 +4,15 @@ Laravel module for table rendering
 ##Installation
 First, require the package using Composer:
 
-`composer require codeator/laravel-table`
+`composer require merkeleon/laravel-table`
 
 Add to your config/app.php providers section
 
-`Codeator\Table\Providers\TableServiceProvider::class`
+`Merkeleon\Table\Providers\TableServiceProvider::class`
 
 and to facades section
 
-`'Table' => Codeator\Table\Facades\Table::class`
+`'Table' => Merkeleon\Table\Facades\Table::class`
 
 ##Examples
 
@@ -30,7 +30,7 @@ namespace App\Tables\Admin;
 use App\Models\User;
 use App\Models\Role;
 use Table;
-use Codeator\Table\Filter\SelectFilter;
+use Merkeleon\Table\Filter\SelectFilter;
 
 class UsersTable extends Table
 {

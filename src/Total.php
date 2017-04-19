@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: codeator
- * Date: 13.10.16
- * Time: 19:16
- */
 
-namespace Codeator\Table;
+namespace Merkeleon\Table;
 
 class Total
 {
@@ -29,7 +23,7 @@ class Total
             }
         }
 
-        $className = 'Codeator\Table\Total\\' . ucfirst(camel_case($type . 'Total'));
+        $className = 'Merkeleon\Table\Total\\' . ucfirst(camel_case($type . 'Total'));
 
         $filter = self::create($name, $params, $className);
         $filter->type($type);

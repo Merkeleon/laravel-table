@@ -1,16 +1,10 @@
 <?php
 
-namespace Codeator\Table\Total;
+namespace Merkeleon\Table\Total;
 
-use Codeator\Table\Total;
+use Merkeleon\Table\Total;
 use DB;
 
-/**
- * Created by PhpStorm.
- * User: codeator
- * Date: 11.11.16
- * Time: 13:23
- */
 class CountTotal extends Total
 {
     public function get($model)

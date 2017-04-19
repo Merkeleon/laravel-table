@@ -1,16 +1,11 @@
 <?php
 
-namespace Codeator\Table\Exporter;
+namespace Merkeleon\Table\Exporter;
 
-use Codeator\Table\Exporter;
+use Merkeleon\Table\Exporter;
 use DB;
 
-/**
- * Created by PhpStorm.
- * User: codeator
- * Date: 14.10.16
- * Time: 11:43
- */
+
 class CsvExporter extends Exporter
 {
 

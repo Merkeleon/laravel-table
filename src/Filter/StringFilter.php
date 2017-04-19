@@ -1,17 +1,10 @@
 <?php
 
-namespace Codeator\Table\Filter;
+namespace Merkeleon\Table\Filter;
 
-use Codeator\Table\Filter;
+use Merkeleon\Table\Filter;
 
-use Request;
 
-/**
- * Created by PhpStorm.
- * User: codeator
- * Date: 13.10.16
- * Time: 19:16
- */
 class StringFilter extends Filter
 {
 
@@ -30,7 +23,7 @@ class StringFilter extends Filter
 
     protected function prepare()
     {
-        $this->value = Request::input('f_' . $this->name);
+        $this->value = request('f_' . $this->name);
     }
 
     public function applyFilter($model)

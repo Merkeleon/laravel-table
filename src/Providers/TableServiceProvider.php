@@ -1,9 +1,9 @@
 <?php
 
-namespace Codeator\Table\Providers;
+namespace Merkeleon\Table\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Codeator\Table\Table;
+use Merkeleon\Table\Table;
 
 class TableServiceProvider extends ServiceProvider
 {
@@ -60,6 +60,6 @@ class TableServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['table', 'Codeator\Table'];
+        return ['table', 'Merkeleon\Table'];
     }
 }

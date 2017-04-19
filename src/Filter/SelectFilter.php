@@ -6,10 +6,10 @@
  * Time: 11:49
  */
 
-namespace Codeator\Table\Filter;
+namespace Merkeleon\Table\Filter;
 
 
-use Codeator\Table\Filter;
+use Merkeleon\Table\Filter;
 
 class SelectFilter extends Filter
 {

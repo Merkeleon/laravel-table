@@ -1,6 +1,6 @@
 <?php
 
-namespace Codeator\Table\Facades;
+namespace Merkeleon\Table\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

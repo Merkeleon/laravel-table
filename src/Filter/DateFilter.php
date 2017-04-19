@@ -1,16 +1,11 @@
 <?php
 
-namespace Codeator\Table\Filter;
+namespace Merkeleon\Table\Filter;
 
-use Codeator\Table\Filter;
-use Request, DB;
+use Merkeleon\Table\Filter;
+use DB;
 
-/**
- * Created by PhpStorm.
- * User: codeator
- * Date: 13.10.16
- * Time: 19:16
- */
+
 class DateFilter extends Filter
 {
 
@@ -18,7 +13,7 @@ class DateFilter extends Filter
 
     protected function prepare()
     {
-        $value = Request::input('f_' . $this->name);
+        $value = request('f_' . $this->name);
         $this->value['from'] = array_get($value, 'from');
         $this->value['to'] = array_get($value, 'to');
     }
