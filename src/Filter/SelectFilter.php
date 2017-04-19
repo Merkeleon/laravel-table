@@ -1,15 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: andrey
- * Date: 18.10.16
- * Time: 11:49
- */
 
 namespace Merkeleon\Table\Filter;
 
-
 use Merkeleon\Table\Filter;
+
 
 class SelectFilter extends Filter
 {
@@ -27,7 +21,7 @@ class SelectFilter extends Filter
 
     protected function prepare()
     {
-        $this->value = \Request::input('f_' . $this->name);
+        $this->value = request('f_' . $this->name);
     }
 
     public function options($options)

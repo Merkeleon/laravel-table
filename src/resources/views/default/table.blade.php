@@ -22,7 +22,7 @@
             <div class="col-xs-6" style="text-align: right">
                 @foreach($exporters as $exporter)
                     <a target="_blank" class="btn btn-info"
-                       href="?{{http_build_query(array_merge(\Request::input(), ['export_to' => $exporter]))}}">Export
+                       href="?{{http_build_query(array_merge(request()->all(), ['export_to' => $exporter]))}}">Export
                         to {{strtoupper($exporter)}}</a>
                 @endforeach
             </div>
@@ -108,7 +108,7 @@
                 <th>
                     @if(in_array($key, $sortables))
                         @if($orderField == $key)
-                            <a href="?{{http_build_query(array_merge(\Request::input(), [ 'orderField' => $key, 'orderDirection' => $orderDirection == 'asc' ? 'desc' : 'asc']))}}">
+                            <a href="?{{http_build_query(array_merge(request()->all(), [ 'orderField' => $key, 'orderDirection' => $orderDirection == 'asc' ? 'desc' : 'asc']))}}">
                                 {{$column}}
                                 @if($orderDirection == 'asc')
                                     <span class="table-arrow-up"></span>
@@ -119,7 +119,7 @@
                                 @endif
                             </a>
                         @else
-                            <a href="?{{http_build_query(array_merge(\Request::input(), [ 'orderField' => $key, 'orderDirection' => 'asc']))}}">
+                            <a href="?{{http_build_query(array_merge(request()->all(), [ 'orderField' => $key, 'orderDirection' => 'asc']))}}">
                                 {{$column}}
                                 <span class="table-arrow-up"></span><span class="table-arrow-down"></span>&nbsp;
                             </a>
