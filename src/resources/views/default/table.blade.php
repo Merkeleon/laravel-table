@@ -12,18 +12,18 @@
         <div class="row">
             <div class="col-xs-6" style="text-align: left">
                 @if(count($filters))
-                    <input type="submit" class="btn btn-success" value="Filter">
+                    <input type="submit" class="btn btn-success" value="{{trans('button.filter')}}">
                     @if($filtersAreActive)
                         <a class="btn btn-warning"
-                           href="?orderField={{$orderField}}&orderDirection={{$orderDirection}}">Reset</a>
+                           href="?orderField={{$orderField}}&orderDirection={{$orderDirection}}">{{trans('button.reset')}}</a>
                     @endif
                 @endif
             </div>
             <div class="col-xs-6" style="text-align: right">
                 @foreach($exporters as $exporter)
                     <a target="_blank" class="btn btn-info"
-                       href="?{{http_build_query(array_merge(request()->all(), ['export_to' => $exporter]))}}">Export
-                        to {{strtoupper($exporter)}}</a>
+                       href="?{{http_build_query(array_merge(request()->all(), ['export_to' => $exporter]))}}">
+                        {{trans('button.export-to', ['format' => strtoupper($exporter)])}}</a>
                 @endforeach
             </div>
         </div>
@@ -52,7 +52,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                    <button type="submit" name="batch_action" value="batch" class="btn btn-success">Batch</button>
+                    <button type="submit" name="batch_action" value="batch" class="btn btn-success">{{trans('button.batch')}}</button>
                 </div>
             </div>
         </form>
