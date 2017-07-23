@@ -30,16 +30,7 @@ class TableServiceProvider extends ServiceProvider
         );
 
         $this->app->bind('table', function ($app) {
-            $table = new Table();
-
-            if ($app->runningInConsole()) {
-                $request = $app['request'];
-                if (!$request->hasSession()) {
-                    $request->setSession($app['session.store']);
-                }
-            }
-            
-            return $table;
+            return new Table();
         });
     }
 
