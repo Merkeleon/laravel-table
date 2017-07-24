@@ -38,8 +38,13 @@ class Table
         $this->model = $model;
     }
 
-    public function columns($columns = [])
+    public function columns($columns = null)
     {
+        if (is_null($columns))
+        {
+            return $this->columns;
+        }
+
         $this->columns = $columns;
 
         return $this;
@@ -52,8 +57,12 @@ class Table
         return $this;
     }
 
-    public function filters($filters = [])
+    public function filters($filters = null)
     {
+        if (is_null($filters))
+        {
+            return $this->filters;
+        }
         $this->filters = $filters;
 
         return $this;

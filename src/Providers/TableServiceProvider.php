@@ -7,14 +7,6 @@ use Merkeleon\Table\Table;
 
 class TableServiceProvider extends ServiceProvider
 {
-
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     public function boot()
     {
         $this->loadViewsFrom(dirname(__DIR__) . '/resources/views', 'table');
@@ -38,18 +30,7 @@ class TableServiceProvider extends ServiceProvider
         );
 
         $this->app->bind('table', function ($app) {
-            $table = new Table();
-
-            /** @var \App $app */
-            if ($app->runningInConsole()) {
-                /** @var \Request $request */
-                $request = $app['request'];
-                if (!$request->hasSession()) {
-                    $request->setSession($app['session.store']);
-                }
-            }
-            
-            return $table;
+            return new Table();
         });
     }
 
