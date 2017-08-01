@@ -15,6 +15,7 @@ class Table
     private $batchActions = [];
     private $model;
     private $theme;
+    private $table;
     private $rows;
     private $pagination;
     private $itemsPerPage = 10;
@@ -34,8 +35,16 @@ class Table
     public function __construct($model = null)
     {
         $this->theme = config('table.theme');
+        $this->table = 'table::' . $this->theme . '.table';
         $this->rowViewPath = 'table::' . $this->theme . '.' . config('table.row');
         $this->model = $model;
+    }
+
+    public function table($viewPath)
+    {
+        $this->table = $viewPath;
+
+        return $this;
     }
 
     public function columns($columns = null)
@@ -243,7 +252,7 @@ class Table
 
     protected function preparedView()
     {
-        return view('table::' . $this->theme . '.table', [
+        return view($this->table, [
             'columns'          => $this->columns,
             'sortables'        => $this->sortables,
             'rows'             => $this->rows,
