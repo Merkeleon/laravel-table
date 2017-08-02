@@ -201,9 +201,21 @@ class Table
         if (request()->has('batch_action')) {
             if ($action = array_get($this->batchActions, request()->get('batch'))) {
                 $query = clone $this->model;
-                if (request()->has('batch_with')) {
-                    $ids = request()->get('b');
-                    $query->whereIn('id', $ids);
+                if ($batchWith = request()->get('batch_with')) {
+                    if ($batchWith === 'selected')
+                    {
+                        $ids = request()->get('b');
+                        if (count($ids))
+                        {
+                            $query->whereIn('id', $ids);
+                        }
+                        else
+                        {
+                            return redirect()
+                                ->back()
+                                ->send();
+                        }
+                    }
                 }
                 $action($query);
 
