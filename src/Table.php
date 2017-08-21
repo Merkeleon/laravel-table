@@ -256,8 +256,13 @@ class Table
 
     protected function setupTable()
     {
-        $this->orderField = request('orderField', $this->orderField);
-        $this->orderDirection = request('orderDirection', $this->orderDirection);
+        $orderField = request('orderField', $this->orderField);
+        $orderDirection = strtolower(request('orderDirection', $this->orderDirection));
+        if (in_array($orderField, $this->sortables) && in_array($orderDirection, ['asc', 'desc']))
+        {
+            $this->orderField     = $orderField;
+            $this->orderDirection = $orderDirection;
+        }
 
         return $this;
     }
