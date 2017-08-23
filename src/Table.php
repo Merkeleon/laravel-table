@@ -6,26 +6,26 @@ namespace Merkeleon\Table;
 class Table
 {
 
-    private $columns = [];
-    private $sortables = [];
-    private $filters = [];
-    private $preparedFilters = [];
-    private $filterCallback = null;
-    private $exporters = [];
-    private $batchActions = [];
-    private $model;
-    private $theme;
-    private $view;
-    private $rows;
-    private $pagination;
-    private $itemsPerPage = 10;
-    private $rowViewPath;
-    private $orderField = 'id';
-    private $orderDirection = 'asc';
-    private $filtersAreActive = false;
-    private $actions = [];
-    private $totals = [];
-    private $preparedTotals = [];
+    protected $columns = [];
+    protected $sortables = [];
+    protected $filters = [];
+    protected $preparedFilters = [];
+    protected $filterCallback = null;
+    protected $exporters = [];
+    protected $batchActions = [];
+    protected $model;
+    protected $theme;
+    protected $view;
+    protected $rows;
+    protected $pagination;
+    protected $itemsPerPage = 10;
+    protected $rowViewPath;
+    protected $orderField = 'id';
+    protected $orderDirection = 'asc';
+    protected $filtersAreActive = false;
+    protected $actions = [];
+    protected $totals = [];
+    protected $preparedTotals = [];
 
     public static function from($model)
     {
