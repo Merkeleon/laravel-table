@@ -29,7 +29,7 @@ class Table
 
     public static function from($model)
     {
-        return new Table($model);
+        return new static($model);
     }
 
     public function __construct($model = null)
