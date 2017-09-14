@@ -12,6 +12,7 @@ abstract class Filter
     protected $theme;
     protected $value;
     protected $viewPath;
+    protected $attributes = [];
 
     public static function make($type, $name)
     {
@@ -115,13 +116,28 @@ abstract class Filter
         return $this->value ? true : false;
     }
 
+    public function viewPath($viewPath)
+    {
+        $this->viewPath = $viewPath;
+
+        return $this;
+    }
+
+    public function attributes($attributes = [])
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
     public function render()
     {
 
         return view('table::' . $this->theme . '.' . $this->viewPath, [
             'name' => $this->name,
             'label' => $this->label,
-            'value' => $this->value
+            'value' => $this->value,
+            'attributes' => $this->attributes,
         ]);
     }
 
