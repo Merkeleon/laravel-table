@@ -123,7 +123,7 @@ abstract class Filter
         return $this;
     }
 
-    public function setAttributes($attributes = [])
+    public function attributes($attributes = [])
     {
         $this->attributes = $attributes;
 
