@@ -32,11 +32,7 @@ class SelectFilter extends Filter
 
     public function render()
     {
-        return view('table::' . $this->theme . '.' . $this->viewPath, [
-            'name' => $this->name,
-            'label' => $this->label,
-            'value' => $this->value,
-            'options' => $this->options,
-        ]);
+        $view = parent::render();
+        return $view->with('options', $this->options);
     }
 }
