@@ -156,7 +156,7 @@ class Table
             $filter->label(array_get($this->columns, $name))
                 ->theme($this->theme);
 
-            $filters[] = $filter;
+            $filters[$name] = $filter;
         }
 
         $this->preparedFilters = $filters;
@@ -188,7 +188,7 @@ class Table
             $filter->label(array_get($this->columns, $name))
                 ->theme($this->theme);
 
-            $filters[] = $filter;
+            $filters[$name] = $filter;
         }
 
         $this->preparedFilters = $filters;
