@@ -3,6 +3,8 @@
 namespace Merkeleon\Table;
 
 
+use Merkeleon\Table\Exporter\JobExporter;
+
 class Table
 {
 
@@ -142,8 +144,27 @@ class Table
 
     protected function prepareExporters()
     {
-        if ($exporterType = request('export_to')) {
-            $exporter = Exporter::make($exporterType, array_keys($this->columns));
+        $preparedExporters = [];
+        foreach ($this->exporters as $key => $exporter)
+        {
+            if (is_numeric($key))
+            {
+                $preparedExporters[$exporter] = Exporter::make($exporter, $this->columns);
+            }
+            else
+            {
+                $preparedExporters[$key] = $exporter;
+                if ($exporter instanceof JobExporter)
+                {
+                    $exporter->setFilters($this->preparedFilters);
+                }
+            }
+        }
+
+        $this->exporters = $preparedExporters;
+
+        if (($exportType = request('export_to')) && ($exporter = array_get($this->exporters, $exportType)))
+        {
             $exporter->export($this->model);
         }
     }

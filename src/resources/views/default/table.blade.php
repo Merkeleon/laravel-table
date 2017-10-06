@@ -20,10 +20,11 @@
                 @endif
             </div>
             <div class="col-xs-6" style="text-align: right">
-                @foreach($exporters as $exporter)
-                    <a target="_blank" class="btn btn-info"
-                       href="?{{http_build_query(array_merge(request()->all(), ['export_to' => $exporter]))}}">
-                        {{trans('table::button.export-to', ['format' => strtoupper($exporter)])}}</a>
+                @foreach($exporters as $key => $exporter)
+                    <a class="btn btn-info" @if ($exporter->isTargetBlank()) target="_blank" @endif
+                    href="?{{http_build_query(array_merge(request()->all(), ['export_to' => $key]))}}">
+                        {{ $exporter->getLabel() }}
+                    </a>
                 @endforeach
             </div>
         </div>
