@@ -11,6 +11,8 @@ class JobExporter extends Exporter
     /** @var $job AbstractExporterJob */
     protected $job;
     protected $filters;
+    protected $orderField;
+    protected $orderDirection;
     const IS_TARGET_BLANK = false;
 
     public function __construct(AbstractExporterJob $job = null)
@@ -23,6 +25,7 @@ class JobExporter extends Exporter
         if ($this->job)
         {
             $this->job->setFilters($this->filters);
+            $this->job->setOrder($this->orderField, $this->orderDirection);
             dispatch($this->job);
         }
         return redirect()->back();
@@ -43,6 +46,14 @@ class JobExporter extends Exporter
     public function setFilters($filters)
     {
         $this->filters = $filters;
+
+        return $this;
+    }
+
+    public function setOrder($orderField, $orderDirection)
+    {
+        $this->orderField = $orderField;
+        $this->orderDirection = $orderDirection;
 
         return $this;
     }

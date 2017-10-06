@@ -157,6 +157,7 @@ class Table
                 if ($exporter instanceof JobExporter)
                 {
                     $exporter->setFilters($this->preparedFilters);
+                    $exporter->setOrder($this->orderField, $this->orderDirection);
                 }
             }
         }
