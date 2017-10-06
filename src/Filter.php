@@ -123,6 +123,10 @@ abstract class Filter
         return $this;
     }
 
+    public function getValue()
+    {
+        return $this->value;
+    }
     public function attributes($attributes = [])
     {
         $this->attributes = $attributes;
@@ -132,7 +136,6 @@ abstract class Filter
 
     public function render()
     {
-
         return view('table::' . $this->theme . '.' . $this->viewPath, [
             'name' => $this->name,
             'label' => $this->label,

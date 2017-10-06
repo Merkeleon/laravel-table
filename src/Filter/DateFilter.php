@@ -14,8 +14,14 @@ class DateFilter extends Filter
     protected function prepare()
     {
         $value = request('f_' . $this->name);
-        $this->value['from'] = array_get($value, 'from');
-        $this->value['to'] = array_get($value, 'to');
+        if ($from = array_get($value, 'from'))
+        {
+            $this->value['from'] = $from;
+        }
+        if ($to = array_get($value, 'to'))
+        {
+            $this->value['to'] = $to;
+        }
     }
 
     public function applyFilter($model)
