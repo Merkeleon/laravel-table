@@ -19,7 +19,7 @@ class CsvExporter extends Exporter
         return $this->toCSV($results);
     }
 
-    function toCSV(array $fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false)
+    protected function toCSV(array $fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false)
     {
         $delimiter_esc = preg_quote($delimiter, '/');
         $enclosure_esc = preg_quote($enclosure, '/');
