@@ -15,7 +15,7 @@ abstract class Exporter
         $exporter = new $exporterName();
         $exporter
             ->columns($columns)
-            ->setLabel(trans('table::button.export-to', ['format' => strtoupper($exporter)]));
+            ->setLabel(trans('table::button.export-to', ['format' => strtoupper($exporterName)]));
 
         return $exporter;
     }
