@@ -18,6 +18,13 @@
   "require-dev": {
     "phpunit/phpunit": "4.5.*"
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Merkeleon\\Table\\Providers\\TableServiceProvider"
+      ]
+    }
+  },
   "autoload": {
     "psr-4": {
       "Merkeleon\\Table\\": "src/"
