@@ -20,10 +20,10 @@ class CallbackTotal extends Total
     {
         if (is_callable($this->callback))
         {
-            $this->callback->call($this, $model);
+            return $this->callback->call($this, $model);
         }
 
-        return $model;
+        return null;
     }
 
     public function setCallback(Closure $callback)
