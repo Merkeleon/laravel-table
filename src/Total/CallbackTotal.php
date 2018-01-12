@@ -15,6 +15,7 @@ class CallbackTotal extends Total
 {
     /** @var Closure $callback */
     protected $callback = null;
+    protected $type     = 'callback';
 
     public function get($model)
     {
