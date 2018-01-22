@@ -25,6 +25,12 @@ class CsvExporter extends Exporter
         $enclosure_esc = preg_quote($enclosure, '/');
 
         $outputString = "";
+
+        if ($fields) {
+            $columnTitles = array_keys(array_first($fields));
+            $outputString .= implode($delimiter, $columnTitles) . "\r\n";
+        }
+
         foreach ($fields as $tempFields) {
             $output = [];
             foreach ($tempFields as $field) {
