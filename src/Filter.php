@@ -16,14 +16,17 @@ abstract class Filter
 
     public static function make($type, $name)
     {
-        if ($type instanceof Filter) {
+        if ($type instanceof Filter)
+        {
             return $type;
         }
         $params = [];
-        if (str_contains($type, '|')) {
+        if (str_contains($type, '|'))
+        {
             list ($type, $paramString) = explode('|', $type, 2);
             $paramPairs = explode('|', $paramString);
-            foreach ($paramPairs as $param) {
+            foreach ($paramPairs as $param)
+            {
                 list($key, $valueString) = explode(':', $param);
                 $params[$key] = str_contains($valueString, ',') ? explode(',', $valueString) : $valueString;
             }
@@ -39,25 +42,31 @@ abstract class Filter
     protected static function createFilter($name, $params, $className)
     {
         $reflectionClass = new \ReflectionClass($className);
-        $preparedParams = [
-            'name' => $name,
+        $preparedParams  = [
+            'name'   => $name,
             'params' => $params,
         ];
+
         return $reflectionClass->newInstanceArgs($preparedParams);
     }
 
     protected static function exportParameterValue($params, \ReflectionParameter $parameter)
     {
-        if ($value = array_get($params, $parameter->getName())) {
+        if ($value = array_get($params, $parameter->getName()))
+        {
             return $value;
         }
-        if ($parameter->isDefaultValueAvailable()) {
+        if ($parameter->isDefaultValueAvailable())
+        {
             return $parameter->getDefaultValue();
         }
         $declaringClass = $parameter->getDeclaringClass();
-        if ($declaringClass) {
+        if ($declaringClass)
+        {
             throw new \InvalidArgumentException(sprintf("Argument \"%s\" for filter \"%s\" is required.", $parameter->getName(), $declaringClass->getName()));
-        } else {
+        }
+        else
+        {
             throw new \InvalidArgumentException(sprintf("Argument \"%s\" is required.", $parameter->getName()));
         }
     }
@@ -65,7 +74,8 @@ abstract class Filter
     public function __construct($name, $params = [])
     {
         $this->name($name);
-        if (array_has($params, 'label')) {
+        if (array_has($params, 'label'))
+        {
             $this->label(array_get($params, 'label'));
         }
         $this->params($params);
@@ -92,7 +102,8 @@ abstract class Filter
 
     public function label($label)
     {
-        if ($label) {
+        if ($label)
+        {
             $this->label = $label;
         }
 
@@ -108,8 +119,10 @@ abstract class Filter
 
     public function isActive()
     {
-        if (is_array($this->value)) {
+        if (is_array($this->value))
+        {
             $value = array_filter($this->value);
+
             return count($value) ? true : false;
         }
 
@@ -127,6 +140,22 @@ abstract class Filter
     {
         return $this->value;
     }
+
+    public function setDefaultValue($value)
+    {
+        if (!$this->value)
+        {
+            $this->value = $value;
+        }
+
+        return $this;
+    }
+
+    protected function preparedName()
+    {
+        return str_replace('.', '_', $this->name);
+    }
+
     public function attributes($attributes = [])
     {
         $this->attributes = $attributes;
@@ -137,9 +166,9 @@ abstract class Filter
     public function render()
     {
         return view('table::' . $this->theme . '.' . $this->viewPath, [
-            'name' => $this->name,
-            'label' => $this->label,
-            'value' => $this->value,
+            'name'       => $this->preparedName(),
+            'label'      => $this->label,
+            'value'      => $this->value,
             'attributes' => $this->attributes,
         ]);
     }
