@@ -149,7 +149,7 @@ class Table
         {
             if (is_numeric($key))
             {
-                $preparedExporters[$exporter] = Exporter::make($exporter, $this->columns);
+                $preparedExporters[$exporter] = Exporter::make($exporter, array_keys($this->columns));
             }
             else
             {

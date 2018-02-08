@@ -1,5 +1,6 @@
 <?php
 return [
-    'sum' => '(sum)',
-    'count' => '(count)'
+    'sum'      => '(sum)',
+    'count'    => '(count)',
+    'callback' => ''
 ];
