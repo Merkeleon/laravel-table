@@ -16,7 +16,7 @@ class SelectFilter extends Filter
         if (count($relations) == 1)
         {
             $field = array_first($relations);
-            $model->where($field, '=', $this->value);
+            return $model->where($field, '=', $this->value);
         }
         else
         {
@@ -33,7 +33,7 @@ class SelectFilter extends Filter
         if ($this->value)
         {
             $relations = explode('.', $this->name);
-            $this->callbackFilter($model, $relations);
+            return $this->callbackFilter($model, $relations);
         }
 
         return $model;
