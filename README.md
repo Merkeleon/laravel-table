@@ -14,6 +14,10 @@ and to facades section
 
 `'Table' => Merkeleon\Table\Facades\Table::class`
 
+Add the views and the localization files:
+
+`php artisan vendor:publish --provider="Merkeleon\Table\Providers\TableServiceProvider"`
+
 ##Examples
 
 ##Translations
