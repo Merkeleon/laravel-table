@@ -12,10 +12,10 @@
         <div class="row">
             <div class="col-xs-6" style="text-align: left">
                 @if(count($filters))
-                    <input type="submit" class="btn btn-success" value="{{trans('table::button.filter')}}">
+                    <input type="submit" class="btn btn-success" value="{{trans('table::table.button.filter')}}">
                     @if($filtersAreActive)
                         <a class="btn btn-warning"
-                           href="?orderField={{$orderField}}&orderDirection={{$orderDirection}}">{{trans('table::button.reset')}}</a>
+                           href="?orderField={{$orderField}}&orderDirection={{$orderDirection}}">{{trans('table::table.button.reset')}}</a>
                     @endif
                 @endif
             </div>
@@ -38,22 +38,22 @@
             <div class="row">
                 <div class="form-group">
                     <select name="batch_with" class="form-control">
-                        <option value="selected">{{ trans('table::batch.action.selected') }}</option>
-                        <option value="all">{{ trans('table::batch.action.all') }}</option>
+                        <option value="selected">{{ trans('table::table.batch.action.selected') }}</option>
+                        <option value="all">{{ trans('table::table.batch.action.all') }}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <select name="batch" class="form-control" required>
                         <option></option>
                         @foreach ($batchActions as $key => $batchAction)
-                            <option value="{{ $key }}">{{ trans('table::batch.labels.'.$key) }}</option>
+                            <option value="{{ $key }}">{{ trans('table::table.batch.labels.'.$key) }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                    <button type="submit" name="batch_action" value="batch" class="btn btn-success">{{trans('table::button.batch')}}</button>
+                    <button type="submit" name="batch_action" value="batch" class="btn btn-success">{{trans('table::table.button.batch')}}</button>
                 </div>
             </div>
         </form>
@@ -153,7 +153,7 @@
                 @foreach($columns as $key => $column)
                     <td>
                         @if(array_get($totals, $key))
-                        {{$column}}&nbsp;{{trans('table::total.'.array_get($totals, $key.'.type'))}}
+                        {{$column}}&nbsp;{{trans('table::table.total.'.array_get($totals, $key.'.type'))}}
                         @endif
                     </td>
                 @endforeach
