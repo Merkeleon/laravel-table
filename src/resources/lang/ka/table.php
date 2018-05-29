@@ -13,7 +13,7 @@ return [
     'filter.range.to'       => 'მდე',
     'pagination.from'       => 'დან',
     'pagination.records'    => 'ჩანაწერები',
-    'total.sum'             => '(თანხა)',
+    'total.sum'             => '(ჯამი)',
     'total.count'           => '(რაოდენობა)',
     'total.callback'        => '',
 ];
