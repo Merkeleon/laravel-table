@@ -5,7 +5,7 @@ return [
     'batch.labels.delete'   => '删除',
     'button.filter'         => '筛选',
     'button.reset'          => '重置',
-    'button.export-to'      => '导出到：格式',
+    'button.export-to'      => '导出到 ：format',
     'button.batch'          => '批量操作',
     'filter.date.from'      => '从',
     'filter.date.to'        => '至',
