@@ -3,43 +3,40 @@
 namespace Merkeleon\Table;
 
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 use Merkeleon\Table\Exporter\JobExporter;
 
 class Table
 {
 
-    protected $columns = [];
-    protected $sortables = [];
-    protected $filters = [];
-    protected $preparedFilters = [];
-    protected $filterCallback = null;
-    protected $exporters = [];
-    protected $batchActions = [];
-    protected $model;
-    protected $theme;
-    protected $view;
+    protected $columns          = [];
+    protected $sortables        = [];
+    protected $filters          = [];
+    protected $filterCallback   = null;
+    protected $exporters        = [];
+    protected $dataSource;
+    protected $theme            = 'default';
+    protected $view             = 'table::default.table';
     protected $rows;
     protected $pagination;
-    protected $itemsPerPage = 10;
-    protected $rowViewPath;
-    protected $orderField = 'id';
-    protected $orderDirection = 'asc';
+    protected $itemsPerPage     = 10;
+    protected $orderField       = 'id';
+    protected $orderDirection   = 'asc';
     protected $filtersAreActive = false;
-    protected $actions = [];
-    protected $totals = [];
-    protected $preparedTotals = [];
+    protected $actions          = [];
+    protected $totals           = [];
+    protected $preparedTotals   = [];
 
     public static function from($model)
     {
         return new static($model);
     }
 
-    public function __construct($model = null)
+    public function __construct($dataSource = null)
     {
-        $this->theme = config('table.theme');
-        $this->view = 'table::' . $this->theme . '.table';
-        $this->rowViewPath = 'table::' . $this->theme . '.' . config('table.row');
-        $this->model = $model;
+        $this->dataSource = $dataSource;
     }
 
     public function view($viewPath)
@@ -74,7 +71,25 @@ class Table
         {
             return $this->filters;
         }
-        $this->filters = $filters;
+
+        $preparedFilters = [];
+        foreach ($filters as $name => $type)
+        {
+            if ($type instanceof Filter)
+            {
+                $preparedFilters[$name] = $type;
+            }
+            else
+            {
+                $filter = Filter::make($type, $name);
+                $filter->label(array_get($this->columns, $name))
+                       ->theme($this->theme);
+
+                $preparedFilters[$name] = $filter;
+            }
+        }
+
+        $this->filters = $preparedFilters;
 
         return $this;
     }
@@ -93,13 +108,6 @@ class Table
         return $this;
     }
 
-    public function actions($actions = [])
-    {
-        $this->actions = $actions;
-
-        return $this;
-    }
-
     public function totals($totals = [])
     {
         $this->totals = $totals;
@@ -107,16 +115,9 @@ class Table
         return $this;
     }
 
-    public function batchActions($batchActions = [])
-    {
-        $this->batchActions = $batchActions;
-
-        return $this;
-    }
-
     public function orderBy($field, $direction = 'asc')
     {
-        $this->orderField = $field;
+        $this->orderField     = $field;
         $this->orderDirection = $direction;
 
         return $this;
@@ -129,16 +130,17 @@ class Table
         return $this;
     }
 
-    protected function prepareModelResults()
+    protected function prepareDataSource()
     {
-        $this->filterModelResults($this->model);
-        $this->sortModelResults($this->model);
-        $this->prepareExporters();
-        $this->runBatch();
-        $this->prepareTotals($this->model);
+        $this->filterDataSourceResults($this->dataSource);
+        $this->sortDataSourceResults($this->dataSource);
 
-        $result = $this->model->paginate($this->itemsPerPage);
-        $this->rows = $result;
+        $this->prepareExporters();
+        $this->prepareTotals($this->dataSource);
+
+        $result = $this->dataSource->paginate($this->itemsPerPage);
+
+        $this->rows       = $result;
         $this->pagination = $result->appends(request()->all());
     }
 
@@ -156,7 +158,7 @@ class Table
                 $preparedExporters[$key] = $exporter;
                 if ($exporter instanceof JobExporter)
                 {
-                    $exporter->setFilters($this->preparedFilters);
+                    $exporter->setFilters($this->filters);
                     $exporter->setOrder($this->orderField, $this->orderDirection);
                 }
             }
@@ -170,30 +172,15 @@ class Table
         }
     }
 
-    protected function prepareModelFilters()
-    {
-        $filters = [];
-        foreach ($this->filters as $name => $type) {
-            $filter = Filter::make($type, $name);
-            $filter->label(array_get($this->columns, $name))
-                ->theme($this->theme);
-
-            $filters[$name] = $filter;
-        }
-
-        $this->preparedFilters = $filters;
-
-        return $filters;
-    }
-
     protected function prepareTotals()
     {
         $totals = [];
-        foreach ($this->totals as $name => $type) {
-            $total = Total::make($type, $name);
+        foreach ($this->totals as $name => $type)
+        {
+            $total         = Total::make($type, $name);
             $totals[$name] = [
-                'total' => $total->get(clone $this->model),
-                'type' => $total->getType()
+                'total' => $total->get(clone $this->dataSource),
+                'type'  => $total->getType()
             ];
         }
 
@@ -205,10 +192,11 @@ class Table
     protected function prepareQuery()
     {
         $filters = [];
-        foreach ($this->filters as $name => $type) {
+        foreach ($this->filters as $name => $type)
+        {
             $filter = Filter::make($type, $name);
             $filter->label(array_get($this->columns, $name))
-                ->theme($this->theme);
+                   ->theme($this->theme);
 
             $filters[$name] = $filter;
         }
@@ -218,55 +206,46 @@ class Table
         return $filters;
     }
 
-    protected function runBatch()
+    protected function filterDataSourceResults($model)
     {
-        if (request()->has('batch_action')) {
-            if ($action = array_get($this->batchActions, request()->get('batch'))) {
-                $query = clone $this->model;
-                if ($batchWith = request()->get('batch_with')) {
-                    if ($batchWith === 'selected')
-                    {
-                        $ids = request()->get('b');
-                        if (count($ids))
-                        {
-                            $query->whereIn('id', $ids);
-                        }
-                        else
-                        {
-                            return redirect()
-                                ->back()
-                                ->send();
-                        }
-                    }
-                }
-                $action($query);
-
-                return redirect()->back()->send();
-            }
-        }
-
-        return $this;
-    }
-
-    protected function filterModelResults($model)
-    {
-        $this->prepareModelFilters();
-        foreach ($this->preparedFilters as $filter) {
-            $this->model = $filter->applyFilter($this->model);
-            if ($filter->isActive()) {
+        foreach ($this->filters as $filter)
+        {
+            $this->dataSource = $filter->applyFilter($this->dataSource);
+            if ($filter->isActive())
+            {
                 $this->filtersAreActive = true;
             }
         }
-        if (is_callable($callback = $this->filterCallback)) {
-            $this->model = call_user_func($callback, $this->model);
+
+        if (is_callable($callback = $this->filterCallback))
+        {
+            $this->dataSource = call_user_func($callback, $this->dataSource);
         }
     }
 
-    protected function sortModelResults($model)
+    protected function sortDataSourceResults($dataSource)
     {
-        $this->model = $model->orderBy($this->orderField, $this->orderDirection);
+        if ($dataSource instanceof Builder || $dataSource instanceof Relation)
+        {
+            $this->dataSource = $dataSource->orderBy($this->orderField, $this->orderDirection);
+        }
+        elseif ($dataSource instanceof Collection)
+        {
+            if ($this->orderDirection == 'asc')
+            {
+                $this->dataSource = $dataSource->sortBy($this->orderField);
+            }
+            else
+            {
+                $this->dataSource = $dataSource->sortByDesc($this->orderField);
+            }
+        }
+        else
+        {
+            throw new Exception('Not supported dataSource');
+        }
 
-        return $this->model;
+        return $this->dataSource;
     }
 
     public function row($viewPath)
@@ -278,7 +257,7 @@ class Table
 
     protected function setupTable()
     {
-        $orderField = request('orderField', $this->orderField);
+        $orderField     = request('orderField', $this->orderField);
         $orderDirection = strtolower(request('orderDirection', $this->orderDirection));
         if (in_array($orderField, $this->sortables) && in_array($orderDirection, ['asc', 'desc']))
         {
@@ -299,11 +278,9 @@ class Table
             'rowViewPath'      => $this->rowViewPath,
             'orderField'       => $this->orderField,
             'orderDirection'   => $this->orderDirection,
-            'filters'          => $this->preparedFilters,
+            'filters'          => $this->filters,
             'filtersAreActive' => $this->filtersAreActive,
             'exporters'        => $this->exporters,
-            'actions'          => $this->actions,
-            'batchActions'     => $this->batchActions,
             'totals'           => $this->preparedTotals
         ]);
     }
@@ -311,9 +288,10 @@ class Table
     public function render()
     {
         $this->setupTable();
-        $this->prepareModelResults();
+        $this->prepareDataSource();
 
-        return $this->preparedView()->render();
+        return $this->preparedView()
+                    ->render();
     }
 
 }

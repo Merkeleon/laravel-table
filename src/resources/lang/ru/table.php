@@ -16,4 +16,5 @@ return [
     'total.sum'             => '(сумма)',
     'total.count'           => '(кол-во)',
     'total.callback'        => '',
+    'row.empty'             => 'Нет данных'
 ];

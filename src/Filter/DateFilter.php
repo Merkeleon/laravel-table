@@ -2,6 +2,8 @@
 
 namespace Merkeleon\Table\Filter;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Merkeleon\Table\Filter;
 use DB;
 
@@ -24,16 +26,39 @@ class DateFilter extends Filter
         }
     }
 
-    public function applyFilter($model)
+    protected function applyEloquentFilter($dataSource)
     {
-        if ($from = array_get($this->value, 'from')) {
-            $model = $model->where(DB::raw('DATE_FORMAT('.$model->getModel()->getTable().'.'.$this->name.', "%Y-%m-%d")'), '>=', date('Y-m-d', strtotime($from)));
+        if ($from = array_get($this->value, 'from'))
+        {
+            $dataSource = $dataSource->where(DB::raw('DATE_FORMAT(' . $dataSource->getModel()
+                                                                                 ->getTable() . '.' . $this->name . ', "%Y-%m-%d")'), '>=', date('Y-m-d', strtotime($from)));
         }
 
-        if ($to = array_get($this->value, 'to')) {
-            $model = $model->where(DB::raw('DATE_FORMAT('.$model->getModel()->getTable().'.'.$this->name.', "%Y-%m-%d")'), '<=', date('Y-m-d', strtotime($to)));
+        if ($to = array_get($this->value, 'to'))
+        {
+            $dataSource = $dataSource->where(DB::raw('DATE_FORMAT(' . $dataSource->getModel()
+                                                                                 ->getTable() . '.' . $this->name . ', "%Y-%m-%d")'), '<=', date('Y-m-d', strtotime($to)));
         }
 
-        return $model;
+        return $dataSource;
+    }
+
+    protected function applyCollectionFilter($dataSource)
+    {
+        if ($from = array_get($this->value, 'from'))
+        {
+            $dataSource = $dataSource->filter(function ($item, $key) use ($from) {
+                return strtotime($item->{$this->name}) >= strtotime($from);
+            });
+        }
+
+        if ($to = array_get($this->value, 'to'))
+        {
+            $dataSource = $dataSource->filter(function ($item, $key) use ($to) {
+                return strtotime($item->{$this->name}) <= strtotime($to);
+            });
+        }
+
+        return $dataSource;
     }
 }

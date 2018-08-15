@@ -1,15 +1,7 @@
-<div class="form-group">
+<div class="form__element form__element_filter_date">
     <label>{{$label}}</label>
-    <div class="row">
-        <div class="col-xs-6">
-            <input @foreach (array_get($attributes, 'from', []) as $k => $v) {{ $k }}="{{ $v }}" @endforeach
-            class="form-control" data-toggle="datepicker"  type="text" value="{{array_get($value, 'from')}}"
-            placeholder="{{ trans('table::table.filter.date.from') }}" name="f_{{$name}}[from]"/>
-        </div>
-        <div class="col-xs-6">
-            <input @foreach (array_get($attributes, 'to', []) as $k => $v) {{ $k }}="{{ $v }}" @endforeach
-            class="form-control" data-toggle="datepicker"  type="text" value="{{array_get($value, 'to')}}"
-            placeholder="{{ trans('table::table.filter.date.to') }}" name="f_{{$name}}[to]"/>
-        </div>
+    <div class="form__element-container input-group">
+        <input class="form-control" data-toggle="date-picker" type="text" value="{{array_get($value, 'from')}}" placeholder="{{ trans('table::table.filter.date.from') }}" name="f_{{$name}}[from]"/>
+        <input class="form-control" data-toggle="date-picker" type="text" value="{{array_get($value, 'to')}}" placeholder="{{ trans('table::table.filter.date.to') }}" name="f_{{$name}}[to]"/>
     </div>
 </div>

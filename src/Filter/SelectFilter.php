@@ -22,11 +22,48 @@ class SelectFilter extends Filter
         return parent::params($params);
     }
 
-    public function callbackFilter($model, $relations)
+    protected function applyEloquentFilter($dataSource)
     {
-        if (count($relations) == 1)
+        if ($this->value)
         {
-            $field = array_first($relations);
+            $relations = explode('.', $this->name);
+
+            if (count($relations) == 1)
+            {
+                $field = array_first($relations);
+                if ($this->cast)
+                {
+                    if (in_array($this->cast, ['int', 'integer']))
+                    {
+                        $this->value = (int)$this->value;
+                    }
+
+                    if (in_array($this->cast, ['str', 'string']))
+                    {
+                        $this->value = (string)$this->value;
+                    }
+                }
+
+                return $dataSource->where($field, '=', $this->value);
+            }
+            else
+            {
+                $relation = array_shift($relations);
+
+                return $dataSource->whereHas($relation, function ($query) use ($relations) {
+                    return $this->callbackFilter($query, $relations);
+                });
+            }
+        }
+
+        return $dataSource;
+    }
+
+    protected function applyCollectionFilter($dataSource)
+    {
+        if ($this->value)
+        {
+            //@TODO add relations support
             if ($this->cast)
             {
                 if (in_array($this->cast, ['int', 'integer']))
@@ -40,28 +77,12 @@ class SelectFilter extends Filter
                 }
             }
 
-            return $model->where($field, '=', $this->value);
-        }
-        else
-        {
-            $relation = array_shift($relations);
-
-            return $model->whereHas($relation, function ($query) use ($relations) {
-                return $this->callbackFilter($query, $relations);
+            return $dataSource->filter(function ($item) {
+                return $item->{$this->name} == $this->value;
             });
         }
-    }
 
-    public function applyFilter($model)
-    {
-        if ($this->value)
-        {
-            $relations = explode('.', $this->name);
-
-            return $this->callbackFilter($model, $relations);
-        }
-
-        return $model;
+        return $dataSource;
     }
 
     protected function prepare()
