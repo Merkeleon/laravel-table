@@ -168,7 +168,7 @@ class Table
 
         if (($exportType = request('export_to')) && ($exporter = array_get($this->exporters, $exportType)))
         {
-            $exporter->export($this->model);
+            $exporter->export($this->dataSource);
         }
     }
 
