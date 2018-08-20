@@ -21,12 +21,14 @@
                 @endif
             </div>
             <div class="table-filter__actions-exporters">
-                @foreach($exporters as $key => $exporter)
-                    <a class="btn btn-info" @if ($exporter->isTargetBlank()) target="_blank" @endif
-                       href="?{{http_build_query(array_merge(request()->all(), ['export_to' => $key]))}}">
-                        {{ $exporter->getLabel() }}
-                    </a>
-                @endforeach
+                @if(count($rows))
+                    @foreach($exporters as $key => $exporter)
+                        <a class="btn btn-info" @if ($exporter->isTargetBlank()) target="_blank" @endif
+                           href="?{{http_build_query(array_merge(request()->all(), ['export_to' => $key]))}}">
+                            {{ $exporter->getLabel() }}
+                        </a>
+                    @endforeach
+                @endif
             </div>
         </div>
         @endif
