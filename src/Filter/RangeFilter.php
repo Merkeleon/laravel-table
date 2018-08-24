@@ -32,12 +32,13 @@ class RangeFilter extends Filter
     }
 
     public function applyFilter($model) {
-
-        if($from = array_get($this->value, 'from')) {
+        $from = array_get($this->value, 'from');
+        if($from && is_numeric($from)) {
             $model = $model->where($model->getModel()->getTable().'.'.$this->name, '>=', $from * $this->multiplier);
         }
 
-        if($to = array_get($this->value, 'to')) {
+        $to = array_get($this->value, 'to');
+        if($to && is_numeric($to)) {
             $model = $model->where($model->getModel()->getTable().'.'.$this->name, '<=', $to * $this->multiplier);
         }
 
