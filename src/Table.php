@@ -21,6 +21,7 @@ class Table
     protected $view             = 'table::default.table';
     protected $rows;
     protected $pagination;
+    protected $rowViewPath;
     protected $itemsPerPage     = 10;
     protected $orderField       = 'id';
     protected $orderDirection   = 'asc';
@@ -28,6 +29,8 @@ class Table
     protected $actions          = [];
     protected $totals           = [];
     protected $preparedTotals   = [];
+    protected $classes          = ['ctable'];
+    protected $attributes       = [];
 
     public static function from($model)
     {
@@ -108,6 +111,22 @@ class Table
         return $this;
     }
 
+    public function attributes($attributes = [])
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    public function addClass($classes)
+    {
+        $newClassesList = is_array($classes) ? $classes : func_get_args();
+
+        $this->classes = array_merge($this->classes, $newClassesList);
+
+        return $this;
+    }
+
     public function totals($totals = [])
     {
         $this->totals = $totals;
@@ -130,18 +149,28 @@ class Table
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function prepareDataSource()
     {
         $this->filterDataSourceResults($this->dataSource);
         $this->sortDataSourceResults($this->dataSource);
 
         $this->prepareExporters();
-        $this->prepareTotals($this->dataSource);
+        $this->prepareTotals();
 
         $result = $this->dataSource->paginate($this->itemsPerPage);
 
         $this->rows       = $result;
         $this->pagination = $result->appends(request()->all());
+    }
+
+    protected function prepareAttributes()
+    {
+        $classFromAttributes = array_get($this->attributes, 'class', []);
+        $classList = array_merge($this->classes, array_wrap($classFromAttributes));
+        $this->attributes['class'] = implode(' ', $classList);
     }
 
     protected function prepareExporters()
@@ -223,6 +252,11 @@ class Table
         }
     }
 
+    /**
+     * @param $dataSource
+     * @return Builder|Relation|Collection|null
+     * @throws Exception
+     */
     protected function sortDataSourceResults($dataSource)
     {
         if ($dataSource instanceof Builder || $dataSource instanceof Relation)
@@ -281,7 +315,8 @@ class Table
             'filters'          => $this->filters,
             'filtersAreActive' => $this->filtersAreActive,
             'exporters'        => $this->exporters,
-            'totals'           => $this->preparedTotals
+            'totals'           => $this->preparedTotals,
+            'attributes'       => $this->attributes,
         ]);
     }
 
@@ -289,6 +324,7 @@ class Table
     {
         $this->setupTable();
         $this->prepareDataSource();
+        $this->prepareAttributes();
 
         return $this->preparedView()
                     ->render();

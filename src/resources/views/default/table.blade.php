@@ -36,7 +36,7 @@
 </div>
 
 <div class="table-content">
-    <table class="ctable">
+    <table @foreach ($attributes as $key => $value) {{ $key }}="{{ $value }}" @endforeach>
         <thead>
             <tr>
                 @foreach($columns as $key => $column)
