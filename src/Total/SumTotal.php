@@ -20,6 +20,6 @@ class SumTotal extends Total
 
     public function get($model)
     {
-        return $model->select(DB::raw('SUM(' . $model->getModel()->getTable().'.'.$this->column . (($this->multiplier && $this->multiplier != 1 ) ? ' / '.$this->multiplier : '').') as total'))->first()->total;
+        return $model->addSelect(DB::raw('SUM(' . $model->getModel()->getTable().'.'.$this->column . (($this->multiplier && $this->multiplier != 1 ) ? ' / '.$this->multiplier : '').') as total'))->first()->total;
     }
 }

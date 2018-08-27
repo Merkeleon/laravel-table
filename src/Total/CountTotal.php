@@ -9,6 +9,6 @@ class CountTotal extends Total
 {
     public function get($model)
     {
-        return $model->select(DB::raw('COUNT(' . $model->getModel()->getTable().'.'.$this->column . ') as total'))->first()->total;
+        return $model->addSelect(DB::raw('COUNT(' . $model->getModel()->getTable().'.'.$this->column . ') as total'))->first()->total;
     }
 }
