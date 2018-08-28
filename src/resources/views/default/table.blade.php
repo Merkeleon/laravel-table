@@ -74,8 +74,8 @@
                     'orderField' => $orderField
                 ])
             @empty
-                <tr>
-                    <td colspan="{{count($columns)}}" style="text-align: center">
+                <tr class="ctable-row-no-data">
+                    <td colspan="{{count($columns)}}">
                         {{ trans('table::table.row.empty') }}
                     </td>
                 </tr>
