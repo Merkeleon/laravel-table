@@ -38,6 +38,11 @@ abstract class AbstractExporterJob implements ShouldQueue
         return $this;
     }
 
+    public function getFilters()
+    {
+        return $this->filters;
+    }
+
     public function setOrder($field, $direction)
     {
         $this->orderField = $field;
