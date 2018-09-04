@@ -80,7 +80,7 @@
                     </td>
                 </tr>
             @endforelse
-            @if(count($totals))
+            @if(count($totals) && count($rows))
                 <tr class="ctable-total-heading">
                     @foreach($columns as $key => $column)
                         <td>
