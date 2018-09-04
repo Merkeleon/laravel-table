@@ -36,7 +36,7 @@
 </div>
 
 <div class="table-content">
-    <table class="ctable">
+    <table @foreach ($attributes as $key => $value) {{ $key }}="{{ $value }}" @endforeach>
         <thead>
             <tr>
                 @foreach($columns as $key => $column)
@@ -74,8 +74,8 @@
                     'orderField' => $orderField
                 ])
             @empty
-                <tr>
-                    <td colspan="{{count($columns)}}" style="text-align: center">
+                <tr class="ctable-row-no-data">
+                    <td colspan="{{count($columns)}}">
                         {{ trans('table::table.row.empty') }}
                     </td>
                 </tr>
