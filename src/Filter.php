@@ -13,6 +13,7 @@ abstract class Filter
     protected $value;
     protected $viewPath;
     protected $attributes = [];
+    protected $error;
 
     public static function make($type, $name)
     {
@@ -170,6 +171,7 @@ abstract class Filter
             'label'      => $this->label,
             'value'      => $this->value,
             'attributes' => $this->attributes,
+            'error'      => $this->error,
         ]);
     }
 
