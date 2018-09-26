@@ -10,6 +10,7 @@ class DateFilter extends Filter
 {
 
     protected $viewPath = 'filters.date';
+    protected $validators = 'date';
 
     protected function prepare()
     {
@@ -35,5 +36,29 @@ class DateFilter extends Filter
         }
 
         return $model;
+    }
+
+    public function validate()
+    {
+        if (!request()->has('f_' . $this->name)) {
+            return true;
+        }
+
+        $validator = validator(request()->all(), [
+            'f_' . $this->name . '.from' => $this->validators,
+            'f_' . $this->name . '.to'   => $this->validators,
+        ]);
+
+        if ($validator->fails()) {
+            $errors = array_undot($validator->errors()
+                                            ->toArray());
+
+            $this->error['from'] = array_get(array_undot($errors), 'f_' . $this->name . '.from.0');
+            $this->error['to']   = array_get(array_undot($errors), 'f_' . $this->name . '.to.0');
+
+            return false;
+        }
+
+        return true;
     }
 }
