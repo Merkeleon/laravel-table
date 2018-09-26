@@ -13,6 +13,7 @@ abstract class Filter
     protected $value;
     protected $viewPath;
     protected $attributes = [];
+    protected $validators = '';
     protected $error;
 
     public static function make($type, $name)
@@ -111,6 +112,13 @@ abstract class Filter
         return $this;
     }
 
+    public function validators($validators)
+    {
+        $this->validators = $validators;
+
+        return $this;
+    }
+
     public function theme($theme)
     {
         $this->theme = $theme;
@@ -162,6 +170,28 @@ abstract class Filter
         $this->attributes = $attributes;
 
         return $this;
+    }
+
+    public function validate()
+    {
+        if (!request()->has('f_' . $this->name)) {
+            return true;
+        }
+
+        $validator = validator(request()->all(), [
+            'f_' . $this->name => $this->validators,
+        ]);
+
+        if ($validator->fails()) {
+            $errors = array_undot($validator->errors()
+                                            ->toArray());
+
+            $this->error = array_get(array_undot($errors), 'f_' . $this->name . '.0');
+
+            return false;
+        }
+
+        return true;
     }
 
     public function render()

@@ -252,7 +252,9 @@ class Table
     {
         $this->prepareModelFilters();
         foreach ($this->preparedFilters as $filter) {
-            $this->model = $filter->applyFilter($this->model);
+            if($filter->validate()) {
+                $this->model = $filter->applyFilter($this->model);
+            }
             if ($filter->isActive()) {
                 $this->filtersAreActive = true;
             }

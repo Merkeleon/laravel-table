@@ -1,7 +1,7 @@
 <div class="form-group">
     <label>{{$label}}</label>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-12 @if($error) has-error @endif">
             <select @foreach ($attributes as $k => $v) {{ $k }}="{{ $v }}" @endforeach name="f_{{$name}}"
             class="form-control">
                 <option></option>
@@ -9,6 +9,7 @@
                     <option value="{{$key}}" @if ($value == $key) selected @endif>{{$option}}</option>
                 @endforeach
             </select>
+            <span class="error">{{$error}}</span>
         </div>
     </div>
 </div>

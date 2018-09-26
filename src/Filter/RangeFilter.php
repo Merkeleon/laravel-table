@@ -10,6 +10,7 @@ class RangeFilter extends Filter
 
     protected $viewPath = 'filters.range';
     protected $multiplier = 1;
+    protected $validators = 'numeric';
 
     public function params($params) {
         if (($multiplier = array_get($params, 'multiplier')) !== null) {
@@ -33,10 +34,6 @@ class RangeFilter extends Filter
 
     public function applyFilter($model) {
 
-        if(!$this->validate()) {
-            return $model;
-        }
-
         if($from = array_get($this->value, 'from')) {
             $model = $model->where($model->getModel()->getTable().'.'.$this->name, '>=', $from * $this->multiplier);
         }
@@ -48,11 +45,15 @@ class RangeFilter extends Filter
         return $model;
     }
 
-    protected function validate()
+    public function validate()
     {
+        if (!request()->has('f_' . $this->name)) {
+            return true;
+        }
+
         $validator = validator(request()->all(), [
-            'f_' . $this->name . '.from' => 'numeric',
-            'f_' . $this->name . '.to'   => 'numeric',
+            'f_' . $this->name . '.from' => $this->validators,
+            'f_' . $this->name . '.to'   => $this->validators,
         ]);
 
         if ($validator->fails()) {
@@ -60,7 +61,7 @@ class RangeFilter extends Filter
                                             ->toArray());
 
             $this->error['from'] = array_get(array_undot($errors), 'f_' . $this->name . '.from.0');
-            $this->error['to'] = array_get(array_undot($errors), 'f_' . $this->name . '.to.0');
+            $this->error['to']   = array_get(array_undot($errors), 'f_' . $this->name . '.to.0');
 
             return false;
         }

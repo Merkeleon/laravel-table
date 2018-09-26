@@ -10,6 +10,7 @@ class DateFilter extends Filter
 {
 
     protected $viewPath = 'filters.date';
+    protected $validators = 'date';
 
     protected function prepare()
     {
@@ -26,10 +27,6 @@ class DateFilter extends Filter
 
     public function applyFilter($model)
     {
-        if(!$this->validate()) {
-            return $model;
-        }
-
         if ($from = array_get($this->value, 'from')) {
             $model = $model->where(DB::raw('DATE_FORMAT('.$model->getModel()->getTable().'.'.$this->name.', "%Y-%m-%d")'), '>=', date('Y-m-d', strtotime($from)));
         }
@@ -41,11 +38,15 @@ class DateFilter extends Filter
         return $model;
     }
 
-    protected function validate()
+    public function validate()
     {
+        if (!request()->has('f_' . $this->name)) {
+            return true;
+        }
+
         $validator = validator(request()->all(), [
-            'f_' . $this->name . '.from' => 'date',
-            'f_' . $this->name . '.to'   => 'date',
+            'f_' . $this->name . '.from' => $this->validators,
+            'f_' . $this->name . '.to'   => $this->validators,
         ]);
 
         if ($validator->fails()) {
@@ -53,7 +54,7 @@ class DateFilter extends Filter
                                             ->toArray());
 
             $this->error['from'] = array_get(array_undot($errors), 'f_' . $this->name . '.from.0');
-            $this->error['to'] = array_get(array_undot($errors), 'f_' . $this->name . '.to.0');
+            $this->error['to']   = array_get(array_undot($errors), 'f_' . $this->name . '.to.0');
 
             return false;
         }
