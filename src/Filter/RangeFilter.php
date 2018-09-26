@@ -2,6 +2,7 @@
 
 namespace Merkeleon\Table\Filter;
 
+use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 use Merkeleon\Table\Filter;
 
 
@@ -73,7 +74,8 @@ class RangeFilter extends Filter
 
     public function validate()
     {
-        if (!request()->has('f_' . $this->name)) {
+        if (!request()->has('f_' . $this->name))
+        {
             return true;
         }
 
@@ -82,7 +84,8 @@ class RangeFilter extends Filter
             'f_' . $this->name . '.to'   => $this->validators,
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+        {
             $errors = array_undot($validator->errors()
                                             ->toArray());
 
@@ -93,5 +96,26 @@ class RangeFilter extends Filter
         }
 
         return true;
+    }
+
+    protected function applyElasticSearchFilter(ElasticSearchModel $dataSource)
+    {
+        $from = $this->prepareRangeValue(array_get($this->value, 'from'));
+        $to   = $this->prepareRangeValue(array_get($this->value, 'from'));
+
+        $dataSource->query()
+                   ->range($this->name, $from, $to);
+
+        return $dataSource;
+    }
+
+    protected function prepareRangeValue($value)
+    {
+        if (!$value)
+        {
+            return null;
+        }
+
+        return $value * $this->multiplier;
     }
 }

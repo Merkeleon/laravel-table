@@ -3,14 +3,14 @@
 namespace Merkeleon\Table\Filter;
 
 use Merkeleon\Table\Filter;
-
+use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 
 class StringFilter extends Filter
 {
 
-    protected $viewPath = 'filters.string';
-    protected $isStrict = false;
-    protected $cast     = false;
+    protected $viewPath       = 'filters.string';
+    protected $isStrict       = false;
+    protected $searchInObject = false;
 
     public function params($params)
     {
@@ -19,9 +19,9 @@ class StringFilter extends Filter
             $this->isStrict = $isStrict;
         }
 
-        if (($cast = array_get($params, 'cast')))
+        if (($searchInObject = array_get($params, 'search_in_object')))
         {
-            $this->cast = $cast;
+            $this->searchInObject = $searchInObject;
         }
 
         return parent::params($params);
@@ -36,19 +36,6 @@ class StringFilter extends Filter
     {
         if ($this->value)
         {
-            if ($this->cast)
-            {
-                if (in_array($this->cast, ['int', 'integer']))
-                {
-                    $this->value = (int)$this->value;
-                }
-
-                if (in_array($this->cast, ['str', 'string']))
-                {
-                    $this->value = (string)$this->value;
-                }
-            }
-
             if ($this->isStrict)
             {
                 $dataSource = $dataSource->where($dataSource->getModel()
@@ -68,20 +55,6 @@ class StringFilter extends Filter
     {
         if ($this->value)
         {
-            //@TODO add relations support
-            if ($this->cast)
-            {
-                if (in_array($this->cast, ['int', 'integer']))
-                {
-                    $this->value = (int)$this->value;
-                }
-
-                if (in_array($this->cast, ['str', 'string']))
-                {
-                    $this->value = (string)$this->value;
-                }
-            }
-
             return $dataSource->filter(function ($item) {
                 if ($this->isStrict)
                 {
@@ -92,6 +65,23 @@ class StringFilter extends Filter
                     return str_contains($item->{$this->name}, $this->value);
                 }
             });
+        }
+
+        return $dataSource;
+    }
+
+    protected function applyElasticSearchFilter(ElasticSearchModel $dataSource)
+    {
+        if ($this->isStrict)
+        {
+            $dataSource->query()
+                       ->term($this->name, $this->value);
+        }
+        else
+        {
+            $name = $this->searchInObject ? $this->name . '.*' : $this->name;
+            $dataSource->query()
+                       ->matchSubString($name, $this->value);
         }
 
         return $dataSource;

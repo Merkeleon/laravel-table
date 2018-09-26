@@ -5,6 +5,7 @@ namespace Merkeleon\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 
 abstract class Filter
 {
@@ -12,12 +13,13 @@ abstract class Filter
     protected $name;
     protected $params;
     protected $label;
-    protected $theme = 'default';
+    protected $theme      = 'default';
     protected $value;
     protected $viewPath;
     protected $attributes = [];
     protected $validators = '';
     protected $error;
+    protected $cast       = null;
 
     public static function make($type, $name)
     {
@@ -85,22 +87,44 @@ abstract class Filter
         }
         $this->params($params);
         $this->prepare();
+        $this->prepareCast();
     }
 
     protected abstract function prepare();
 
+    protected function prepareCast()
+    {
+        if (in_array($this->cast, ['int', 'integer']))
+        {
+            $this->value = (int)$this->value;
+        }
+
+        if (in_array($this->cast, ['str', 'string']))
+        {
+            $this->value = (string)$this->value;
+        }
+    }
+
     public function applyFilter($dataSource)
     {
-        if ($this->value)
+        if (!$this->value)
         {
-            if ($dataSource instanceof Builder || $dataSource instanceof Relation)
-            {
-                $dataSource = $this->applyEloquentFilter($dataSource);
-            }
-            elseif ($dataSource instanceof Collection)
-            {
-                $dataSource = $this->applyCollectionFilter($dataSource);
-            }
+            return $dataSource;
+        }
+
+        if ($dataSource instanceof Builder || $dataSource instanceof Relation)
+        {
+            return $this->applyEloquentFilter($dataSource);
+        }
+
+        if ($dataSource instanceof Collection)
+        {
+            return $this->applyCollectionFilter($dataSource);
+        }
+
+        if ($dataSource instanceof ElasticSearchModel)
+        {
+            return $this->applyElasticSearchFilter($dataSource);
         }
 
         return $dataSource;
@@ -115,6 +139,11 @@ abstract class Filter
 
     public function params($params)
     {
+        if (($cast = array_get($params, 'cast')))
+        {
+            $this->cast = $cast;
+        }
+
         $this->params = $params;
 
         return $this;
