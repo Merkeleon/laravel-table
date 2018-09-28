@@ -16,5 +16,6 @@ return [
     'pagination.records'    => 'einträge',
     'total.sum'             => '(Gesamtbetrag)',
     'total.count'           => '(Anzahl)',
-    'total.callback'        => ''
+    'total.callback'        => '',
+    'row.empty'             => 'Keine Daten'
 ];

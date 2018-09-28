@@ -13,8 +13,7 @@ class TableServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(dirname(__DIR__) . '/resources/lang', 'table');
         $this->publishes([
             dirname(__DIR__) . '/resources/views' => resource_path('views/vendor/table'),
-            dirname(__DIR__) . '/resources/lang' => resource_path('lang/vendor/table'),
-            dirname(__DIR__) . '/config/table.php' => config_path('table.php'),
+            dirname(__DIR__) . '/resources/lang' => resource_path('lang/vendor/table')
         ]);
     }
 
@@ -25,10 +24,6 @@ class TableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(
-            dirname(__DIR__) . '/config/table.php', 'table'
-        );
-
         $this->app->bind('table', function ($app) {
             return new Table();
         });

@@ -2,6 +2,9 @@
 
 namespace Merkeleon\Table;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 
 abstract class Filter
 {
@@ -9,7 +12,7 @@ abstract class Filter
     protected $name;
     protected $params;
     protected $label;
-    protected $theme;
+    protected $theme = 'default';
     protected $value;
     protected $viewPath;
     protected $attributes = [];
@@ -86,7 +89,22 @@ abstract class Filter
 
     protected abstract function prepare();
 
-    public abstract function applyFilter($model);
+    public function applyFilter($dataSource)
+    {
+        if ($this->value)
+        {
+            if ($dataSource instanceof Builder || $dataSource instanceof Relation)
+            {
+                $dataSource = $this->applyEloquentFilter($dataSource);
+            }
+            elseif ($dataSource instanceof Collection)
+            {
+                $dataSource = $this->applyCollectionFilter($dataSource);
+            }
+        }
+
+        return $dataSource;
+    }
 
     public function name($name)
     {

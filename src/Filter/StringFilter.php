@@ -32,7 +32,7 @@ class StringFilter extends Filter
         $this->value = request('f_' . $this->name);
     }
 
-    public function applyFilter($model)
+    protected function applyEloquentFilter($dataSource)
     {
         if ($this->value)
         {
@@ -51,17 +51,49 @@ class StringFilter extends Filter
 
             if ($this->isStrict)
             {
-                $model = $model->where($model->getModel()
-                                             ->getTable() . '.' . $this->name, '=', $this->value);
+                $dataSource = $dataSource->where($dataSource->getModel()
+                                                            ->getTable() . '.' . $this->name, '=', $this->value);
             }
             else
             {
-                $model = $model->where($model->getModel()
-                                             ->getTable() . '.' . $this->name, 'like', '%' . $this->value . '%');
+                $dataSource = $dataSource->where($dataSource->getModel()
+                                                            ->getTable() . '.' . $this->name, 'like', '%' . $this->value . '%');
             }
         }
 
-        return $model;
+        return $dataSource;
     }
 
+    protected function applyCollectionFilter($dataSource)
+    {
+        if ($this->value)
+        {
+            //@TODO add relations support
+            if ($this->cast)
+            {
+                if (in_array($this->cast, ['int', 'integer']))
+                {
+                    $this->value = (int)$this->value;
+                }
+
+                if (in_array($this->cast, ['str', 'string']))
+                {
+                    $this->value = (string)$this->value;
+                }
+            }
+
+            return $dataSource->filter(function ($item) {
+                if ($this->isStrict)
+                {
+                    return $item->{$this->name} == $this->value;
+                }
+                else
+                {
+                    return str_contains($item->{$this->name}, $this->value);
+                }
+            });
+        }
+
+        return $dataSource;
+    }
 }

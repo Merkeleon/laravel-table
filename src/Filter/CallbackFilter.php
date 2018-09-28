@@ -23,14 +23,14 @@ class CallbackFilter extends Filter
         $this->value = request('f_' . str_replace('.', '_', $this->name));
     }
 
-    public function applyFilter($model)
+    public function applyFilter($dataSource)
     {
         if (is_callable($this->callback))
         {
-            $this->callback->call($this, $model, $this->value);
+            $this->callback->call($this, $dataSource, $this->value);
         }
 
-        return $model;
+        return $dataSource;
     }
 
     public function setCallback(Closure $callback)

@@ -96,6 +96,18 @@ class UsersTable extends Table
                     $queryBuilder->delete();
                 }
             ])
+            /*
+            You can add class to <table>
+            */
+            ->addClass('add-one-class')
+            /*
+            Or you can add multiple classes
+            */
+            ->addClass('new-class', 'super-new-class')
+            /*
+            Or add attributes
+            */
+            ->attributes(['id' => 'super-table'])
             ->sortables([
                 'id'
             ])

@@ -1,6 +1,7 @@
-<div class="form-group @if($error) has-error @endif">
+<div class="form__element form__element_filter_text @if($error) form__element_error @endif">
     <label>{{$label}}</label>
-    <input @foreach ($attributes as $k => $v) {{ $k }}="{{ $v }}" @endforeach class="form-control" type="text"
-    value="{{$value}}" name="f_{{$name}}"/>
-    <span class="error">{{$error}}</span>
+    <div class="form__element-container">
+        <input class="form-control" type="text" value="{{$value}}" name="f_{{$name}}"/>
+        <div class="form__feedback">{{$error}}</div>
+    </div>
 </div>

@@ -1,15 +1,12 @@
-<div class="form-group">
+<div class="form__element form__element_filter_select @if($error) form__element_error @endif">
     <label>{{$label}}</label>
-    <div class="row">
-        <div class="col-xs-12 @if($error) has-error @endif">
-            <select @foreach ($attributes as $k => $v) {{ $k }}="{{ $v }}" @endforeach name="f_{{$name}}"
-            class="form-control">
-                <option></option>
-                @foreach ($options as $key => $option)
-                    <option value="{{$key}}" @if ($value == $key) selected @endif>{{$option}}</option>
-                @endforeach
-            </select>
-            <span class="error">{{$error}}</span>
-        </div>
+    <div class="form__element-container">
+        <select name="f_{{$name}}" class="form-control">
+            <option></option>
+            @foreach ($options as $key => $option)
+                <option value="{{$key}}" @if ($value == $key) selected @endif>{{$option}}</option>
+            @endforeach
+        </select>
+        <div class="form__feedback">{{$error}}</div>
     </div>
 </div>

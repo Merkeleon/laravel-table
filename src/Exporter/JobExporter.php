@@ -3,6 +3,7 @@
 namespace Merkeleon\Table\Exporter;
 
 
+use Merkeleon\Table\Events\ExportJobDispatched;
 use Merkeleon\Table\Exporter;
 use Merkeleon\Table\Jobs\AbstractExporterJob;
 
@@ -27,6 +28,7 @@ class JobExporter extends Exporter
             $this->job->setFilters($this->filters);
             $this->job->setOrder($this->orderField, $this->orderDirection);
             dispatch($this->job);
+            event(new ExportJobDispatched($this->job));
         }
         return redirect()->back();
     }

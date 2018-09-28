@@ -17,4 +17,5 @@ return [
     'total.sum'             => '(összeg)',
     'total.count'           => '(számolás)',
     'total.callback'        => '',
+    'row.empty'             => 'Nincs adat'
 ];
