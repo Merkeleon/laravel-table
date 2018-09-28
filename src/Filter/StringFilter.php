@@ -75,7 +75,7 @@ class StringFilter extends Filter
         if ($this->isStrict)
         {
             $dataSource->query()
-                       ->term($this->name, $this->value);
+                       ->where($this->name, $this->value);
         }
         else
         {
