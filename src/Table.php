@@ -312,7 +312,8 @@ class Table
 
     protected function sortDataSourceElasticSearchModel()
     {
-        $this->dataSource->query()->sort([[$this->orderField => $this->orderDirection]]);
+        $this->dataSource->query()
+                         ->sort($this->orderField . ':' . $this->orderDirection);
     }
 
     public function row($viewPath)

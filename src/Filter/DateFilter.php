@@ -70,12 +70,12 @@ class DateFilter extends Filter
 
     public function validate()
     {
-        if (!request()->has('f_' . $this->name))
+        if (!$this->value)
         {
             return true;
         }
 
-        $validator = validator(request()->all(), [
+        $validator = validator($this->value, [
             'f_' . $this->name . '.from' => $this->validators,
             'f_' . $this->name . '.to'   => $this->validators,
         ]);
