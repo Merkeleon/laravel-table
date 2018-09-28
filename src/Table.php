@@ -239,7 +239,9 @@ class Table
     {
         foreach ($this->filters as $filter)
         {
-            $this->dataSource = $filter->applyFilter($this->dataSource);
+            if ($filter->validate()) {
+                $this->dataSource = $filter->applyFilter($this->dataSource);
+            }
             if ($filter->isActive())
             {
                 $this->filtersAreActive = true;

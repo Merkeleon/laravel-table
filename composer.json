@@ -24,6 +24,9 @@
     }
   },
   "autoload": {
+    "files": [
+      "src/Support/helpers.php"
+    ],
     "psr-4": {
       "Merkeleon\\Table\\": "src/"
     }

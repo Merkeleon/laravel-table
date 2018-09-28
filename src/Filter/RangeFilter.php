@@ -10,6 +10,7 @@ class RangeFilter extends Filter
 
     protected $viewPath   = 'filters.range';
     protected $multiplier = 1;
+    protected $validators = 'numeric';
 
     public function params($params)
     {
@@ -68,5 +69,29 @@ class RangeFilter extends Filter
         }
 
         return $dataSource;
+    }
+
+    public function validate()
+    {
+        if (!request()->has('f_' . $this->name)) {
+            return true;
+        }
+
+        $validator = validator(request()->all(), [
+            'f_' . $this->name . '.from' => $this->validators,
+            'f_' . $this->name . '.to'   => $this->validators,
+        ]);
+
+        if ($validator->fails()) {
+            $errors = array_undot($validator->errors()
+                                            ->toArray());
+
+            $this->error['from'] = array_get(array_undot($errors), 'f_' . $this->name . '.from.0');
+            $this->error['to']   = array_get(array_undot($errors), 'f_' . $this->name . '.to.0');
+
+            return false;
+        }
+
+        return true;
     }
 }
