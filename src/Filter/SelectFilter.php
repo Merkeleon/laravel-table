@@ -3,6 +3,7 @@
 namespace Merkeleon\Table\Filter;
 
 use Merkeleon\Table\Filter;
+use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 
 
 class SelectFilter extends Filter
@@ -10,15 +11,9 @@ class SelectFilter extends Filter
 
     protected $options  = [];
     protected $viewPath = 'filters.select';
-    protected $cast     = null;
 
     public function params($params)
     {
-        if (($cast = array_get($params, 'cast')))
-        {
-            $this->cast = $cast;
-        }
-
         return parent::params($params);
     }
 
@@ -31,18 +26,6 @@ class SelectFilter extends Filter
             if (count($relations) == 1)
             {
                 $field = array_first($relations);
-                if ($this->cast)
-                {
-                    if (in_array($this->cast, ['int', 'integer']))
-                    {
-                        $this->value = (int)$this->value;
-                    }
-
-                    if (in_array($this->cast, ['str', 'string']))
-                    {
-                        $this->value = (string)$this->value;
-                    }
-                }
 
                 return $dataSource->where($field, '=', $this->value);
             }
@@ -63,20 +46,6 @@ class SelectFilter extends Filter
     {
         if ($this->value)
         {
-            //@TODO add relations support
-            if ($this->cast)
-            {
-                if (in_array($this->cast, ['int', 'integer']))
-                {
-                    $this->value = (int)$this->value;
-                }
-
-                if (in_array($this->cast, ['str', 'string']))
-                {
-                    $this->value = (string)$this->value;
-                }
-            }
-
             return $dataSource->filter(function ($item) {
                 return $item->{$this->name} == $this->value;
             });
@@ -102,5 +71,13 @@ class SelectFilter extends Filter
         $view = parent::render();
 
         return $view->with('options', $this->options);
+    }
+
+    protected function applyElasticSearchFilter(ElasticSearchModel $dataSource)
+    {
+        $dataSource->query()
+                   ->where($this->name, $this->value);
+
+        return $dataSource;
     }
 }

@@ -6,7 +6,9 @@ namespace Merkeleon\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 use Merkeleon\Table\Exporter\JobExporter;
+
 
 class Table
 {
@@ -155,7 +157,7 @@ class Table
     protected function prepareDataSource()
     {
         $this->filterDataSourceResults($this->dataSource);
-        $this->sortDataSourceResults($this->dataSource);
+        $this->sortDataSourceResults();
 
         $this->prepareExporters();
         $this->prepareTotals();
@@ -203,6 +205,11 @@ class Table
 
     protected function prepareTotals()
     {
+        if ($this->dataSource instanceof ElasticSearchModel)
+        {
+            return;
+        }
+
         $totals = [];
         foreach ($this->totals as $name => $type)
         {
@@ -259,29 +266,53 @@ class Table
      * @return Builder|Relation|Collection|null
      * @throws Exception
      */
-    protected function sortDataSourceResults($dataSource)
+    protected function sortDataSourceResults()
     {
-        if ($dataSource instanceof Builder || $dataSource instanceof Relation)
+        if ($this->dataSource instanceof Builder || $this->dataSource instanceof Relation)
         {
-            $this->dataSource = $dataSource->orderBy($this->orderField, $this->orderDirection);
+            $this->sortDataSourceEloquentBulder();
+
+            return;
         }
-        elseif ($dataSource instanceof Collection)
+
+        if ($this->dataSource instanceof Collection)
         {
-            if ($this->orderDirection == 'asc')
-            {
-                $this->dataSource = $dataSource->sortBy($this->orderField);
-            }
-            else
-            {
-                $this->dataSource = $dataSource->sortByDesc($this->orderField);
-            }
+            $this->sortDataSourceCollection();
+
+            return;
+        }
+
+        if ($this->dataSource instanceof ElasticSearchModel)
+        {
+            $this->sortDataSourceElasticSearchModel();
+
+            return;
+        }
+
+        throw new Exception('Not supported dataSource');
+
+    }
+
+    protected function sortDataSourceEloquentBulder()
+    {
+        $this->dataSource = $this->dataSource->orderBy($this->orderField, $this->orderDirection);
+    }
+
+    protected function sortDataSourceCollection()
+    {
+        if ($this->orderDirection == 'asc')
+        {
+            $this->dataSource = $this->dataSource->sortBy($this->orderField);
         }
         else
         {
-            throw new Exception('Not supported dataSource');
+            $this->dataSource = $this->dataSource->sortByDesc($this->orderField);
         }
+    }
 
-        return $this->dataSource;
+    protected function sortDataSourceElasticSearchModel()
+    {
+        $this->dataSource->query()->sort([[$this->orderField => $this->orderDirection]]);
     }
 
     public function row($viewPath)

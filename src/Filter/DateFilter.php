@@ -2,8 +2,8 @@
 
 namespace Merkeleon\Table\Filter;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Carbon\Carbon;
+use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 use Merkeleon\Table\Filter;
 use DB;
 
@@ -13,6 +13,7 @@ class DateFilter extends Filter
 
     protected $viewPath = 'filters.date';
     protected $validators = 'date';
+    protected $dateFormat = Carbon::DEFAULT_TO_STRING_FORMAT;
 
     protected function prepare()
     {
@@ -24,6 +25,10 @@ class DateFilter extends Filter
         if ($to = array_get($value, 'to'))
         {
             $this->value['to'] = $to;
+        }
+        if ($dateFormat = array_get($value, 'date_format'))
+        {
+            $this->dateFormat = $dateFormat;
         }
     }
 
@@ -65,7 +70,8 @@ class DateFilter extends Filter
 
     public function validate()
     {
-        if (!request()->has('f_' . $this->name)) {
+        if (!request()->has('f_' . $this->name))
+        {
             return true;
         }
 
@@ -74,7 +80,8 @@ class DateFilter extends Filter
             'f_' . $this->name . '.to'   => $this->validators,
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+        {
             $errors = array_undot($validator->errors()
                                             ->toArray());
 
@@ -85,5 +92,26 @@ class DateFilter extends Filter
         }
 
         return true;
+    }
+
+    protected function applyElasticSearchFilter(ElasticSearchModel $dataSource)
+    {
+        $from = $this->prepareDate(array_get($this->value, 'from'));
+        $to   = $this->prepareDate(array_get($this->value, 'to'));
+
+        $dataSource->query()
+                   ->range($this->name, $from, $to);
+
+        return $dataSource;
+    }
+
+    protected function prepareDate($value)
+    {
+        if (!$value)
+        {
+            return null;
+        }
+
+        return (new Carbon($value))->format($this->dateFormat);
     }
 }

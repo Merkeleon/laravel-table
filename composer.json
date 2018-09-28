@@ -14,7 +14,8 @@
     "php": ">=5.3.0",
     "laravel/framework": "~5.6",
     "doctrine/dbal": "~2.3",
-    "maatwebsite/excel": "^3.0"
+    "maatwebsite/excel": "^3.0",
+    "merkeleon/laravel-elastic-reader": "^1.0"
   },
   "extra": {
     "laravel": {
