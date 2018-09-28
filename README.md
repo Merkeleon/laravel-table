@@ -1,7 +1,7 @@
 # Laravel table
 Laravel module for table rendering
 
-## Installation
+##Installation
 First, require the package using Composer:
 
 `composer require merkeleon/laravel-table`
@@ -18,13 +18,13 @@ Add the views and the localization files:
 
 `php artisan vendor:publish --provider="Merkeleon\Table\Providers\TableServiceProvider"`
 
-## Examples
+##Examples
 
-## Translations
+##Translations
 
 Soon
 
-### Table class
+###Table class
 
 ```
 <?php
@@ -127,7 +127,7 @@ class UsersTable extends Table
 }
 ```
 
-### Controller
+###Controller
 
 ```
 <?php
@@ -152,7 +152,7 @@ class UsersController extends Controller
 }
 ```
 
-### View
+###View
 
 ```
 @extends('admin.layout')
@@ -162,7 +162,7 @@ class UsersController extends Controller
 @stop
 ```
 
-### Sample Sass based on bootstrap v4
+###Sample Sass based on bootstrap v4
 
 ```
 .table {
@@ -224,7 +224,7 @@ class UsersController extends Controller
 }
 ```
 
-### Some recommendations for JS
+###Some recommendations for JS
  
  Use [Flatpickr](https://chmln.github.io/flatpickr/) library for datepicker 
 ```
