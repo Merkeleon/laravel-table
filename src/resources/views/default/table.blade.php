@@ -37,35 +37,37 @@
 
 <div class="table-content">
     <table @foreach ($attributes as $key => $value) {{ $key }}="{{ $value }}" @endforeach>
-        <thead>
-            <tr>
-                @foreach($columns as $key => $column)
-                    <th>
-                        @if(in_array($key, $sortables))
-                            @if($orderField == $key)
-                                <a class="table_sorting" href="?{{http_build_query(array_merge(request()->all(), [ 'orderField' => $key, 'orderDirection' => $orderDirection == 'asc' ? 'desc' : 'asc']))}}">
-                                    {{$column}}
-                                    @if($orderDirection == 'asc')
-                                        <span class="table-arrow-up"></span>
-                                        <span class="table-arrow-down" style="visibility: hidden;"></span>
-                                    @else
-                                        <span class="table-arrow-down"></span>
-                                        <span class="table-arrow-up" style="visibility: hidden;"></span>
-                                    @endif
-                                </a>
+        @if (!$hideHeader)
+            <thead>
+                <tr>
+                    @foreach($columns as $key => $column)
+                        <th>
+                            @if(in_array($key, $sortables))
+                                @if($orderField == $key)
+                                    <a class="table_sorting" href="?{{http_build_query(array_merge(request()->all(), [ 'orderField' => $key, 'orderDirection' => $orderDirection == 'asc' ? 'desc' : 'asc']))}}">
+                                        {{$column}}
+                                        @if($orderDirection == 'asc')
+                                            <span class="table-arrow-up"></span>
+                                            <span class="table-arrow-down" style="visibility: hidden;"></span>
+                                        @else
+                                            <span class="table-arrow-down"></span>
+                                            <span class="table-arrow-up" style="visibility: hidden;"></span>
+                                        @endif
+                                    </a>
+                                @else
+                                    <a class="table_sorting" href="?{{http_build_query(array_merge(request()->all(), [ 'orderField' => $key, 'orderDirection' => 'asc']))}}">
+                                        {{$column}}
+                                        <span class="table-arrow-up"></span><span class="table-arrow-down"></span>&nbsp;
+                                    </a>
+                                @endif
                             @else
-                                <a class="table_sorting" href="?{{http_build_query(array_merge(request()->all(), [ 'orderField' => $key, 'orderDirection' => 'asc']))}}">
-                                    {{$column}}
-                                    <span class="table-arrow-up"></span><span class="table-arrow-down"></span>&nbsp;
-                                </a>
+                                {{$column}}
                             @endif
-                        @else
-                            {{$column}}
-                        @endif
-                    </th>
-                @endforeach
-            </tr>
-        </thead>
+                        </th>
+                    @endforeach
+                </tr>
+            </thead>
+        @endif
         <tbody>
             @forelse($rows as $rowData)
                 @include($rowViewPath, [
