@@ -33,6 +33,7 @@ class Table
     protected $preparedTotals   = [];
     protected $classes          = ['ctable'];
     protected $attributes       = [];
+    protected $hideHeader       = false;
 
     public static function from($model)
     {
@@ -136,6 +137,13 @@ class Table
         return $this;
     }
 
+    public function hideHeader($hide = true)
+    {
+        $this->hideHeader = $hide;
+
+        return $this;
+    }
+
     public function orderBy($field, $direction = 'asc')
     {
         $this->orderField     = $field;
@@ -170,8 +178,8 @@ class Table
 
     protected function prepareAttributes()
     {
-        $classFromAttributes = array_get($this->attributes, 'class', []);
-        $classList = array_merge($this->classes, array_wrap($classFromAttributes));
+        $classFromAttributes       = array_get($this->attributes, 'class', []);
+        $classList                 = array_merge($this->classes, array_wrap($classFromAttributes));
         $this->attributes['class'] = implode(' ', $classList);
     }
 
@@ -246,7 +254,8 @@ class Table
     {
         foreach ($this->filters as $filter)
         {
-            if ($filter->validate()) {
+            if ($filter->validate())
+            {
                 $this->dataSource = $filter->applyFilter($this->dataSource);
             }
             if ($filter->isActive())
@@ -351,6 +360,7 @@ class Table
             'exporters'        => $this->exporters,
             'totals'           => $this->preparedTotals,
             'attributes'       => $this->attributes,
+            'hideHeader'       => $this->hideHeader,
         ]);
     }
 
