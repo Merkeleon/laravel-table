@@ -221,19 +221,25 @@ abstract class Filter
 
     public function validate()
     {
-        if (!request()->has('f_' . $this->name)) {
+        if (!$this->value)
+        {
             return true;
         }
 
+        $key = 'f_' . $this->name;
+
         $validator = validator(request()->all(), [
-            'f_' . $this->name => $this->validators,
+            $key => $this->validators,
+        ], [], [
+            $key => $this->label
         ]);
 
-        if ($validator->fails()) {
-            $errors = array_undot($validator->errors()
-                                            ->toArray());
+        if ($validator->fails())
+        {
+            $errors = $validator->errors()
+                                ->toArray();
 
-            $this->error = array_get(array_undot($errors), 'f_' . $this->name . '.0');
+            $this->error = $errors['f_' . $this->name][0] ?? null;
 
             return false;
         }

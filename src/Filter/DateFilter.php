@@ -11,7 +11,7 @@ use DB;
 class DateFilter extends Filter
 {
 
-    protected $viewPath = 'filters.date';
+    protected $viewPath   = 'filters.date';
     protected $validators = 'date';
     protected $dateFormat = Carbon::DEFAULT_TO_STRING_FORMAT;
 
@@ -75,18 +75,24 @@ class DateFilter extends Filter
             return true;
         }
 
-        $validator = validator($this->value, [
-            'f_' . $this->name . '.from' => $this->validators,
-            'f_' . $this->name . '.to'   => $this->validators,
+        $keyFrom = 'f_' . $this->name . '.from';
+        $keyTo   = 'f_' . $this->name . '.to';
+
+        $validator = validator(request()->all(), [
+            $keyFrom => $this->validators,
+            $keyTo   => $this->validators,
+        ], [], [
+            $keyFrom => $this->label . ' ' . trans('table::table.filter.date.from'),
+            $keyTo   => $this->label . ' ' . trans('table::table.filter.date.to'),
         ]);
 
         if ($validator->fails())
         {
-            $errors = array_undot($validator->errors()
-                                            ->toArray());
+            $errors = $validator->errors()
+                                ->toArray();
 
-            $this->error['from'] = array_get(array_undot($errors), 'f_' . $this->name . '.from.0');
-            $this->error['to']   = array_get(array_undot($errors), 'f_' . $this->name . '.to.0');
+            $this->error['from'] = $errors[$keyFrom][0] ?? null;
+            $this->error['to']   = $errors[$keyTo][0] ?? null;
 
             return false;
         }
