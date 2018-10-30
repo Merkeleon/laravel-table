@@ -12,7 +12,7 @@ class DateFilter extends Filter
 {
 
     protected $viewPath   = 'filters.date';
-    protected $validators = 'date';
+    protected $validators = 'nullable|date';
     protected $dateFormat = Carbon::DEFAULT_TO_STRING_FORMAT;
 
     protected function prepare()
