@@ -11,7 +11,7 @@ class RangeFilter extends Filter
 
     protected $viewPath   = 'filters.range';
     protected $multiplier = 1;
-    protected $validators = 'numeric';
+    protected $validators = 'nullable|numeric';
 
     public function params($params)
     {
