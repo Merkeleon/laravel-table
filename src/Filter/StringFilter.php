@@ -29,61 +29,62 @@ class StringFilter extends Filter
 
     protected function prepare()
     {
-        $this->value = request('f_' . $this->name);
+        $this->value = trim(request('f_' . $this->name));
     }
 
     protected function applyEloquentFilter($dataSource)
     {
-        if ($this->value)
+        if (blank($this->value))
         {
-            if ($this->isStrict)
-            {
-                $dataSource = $dataSource->where($dataSource->getModel()
-                                                            ->getTable() . '.' . $this->name, '=', $this->value);
-            }
-            else
-            {
-                $dataSource = $dataSource->where($dataSource->getModel()
-                                                            ->getTable() . '.' . $this->name, 'like', '%' . $this->value . '%');
-            }
+            return $dataSource;
         }
 
-        return $dataSource;
+        if ($this->isStrict)
+        {
+            return $dataSource->where($dataSource->getModel()
+                                                 ->getTable() . '.' . $this->name, '=', $this->value);
+        }
+
+        return $dataSource->where($dataSource->getModel()
+                                             ->getTable() . '.' . $this->name, 'like', '%' . $this->value . '%');
+
     }
 
     protected function applyCollectionFilter($dataSource)
     {
-        if ($this->value)
+        if (blank($this->value))
         {
-            return $dataSource->filter(function ($item) {
-                if ($this->isStrict)
-                {
-                    return $item->{$this->name} == $this->value;
-                }
-                else
-                {
-                    return str_contains($item->{$this->name}, $this->value);
-                }
-            });
+            return $dataSource;
         }
 
-        return $dataSource;
+        return $dataSource->filter(function ($item) {
+            if ($this->isStrict)
+            {
+                return $item->{$this->name} == $this->value;
+            }
+
+            return str_contains($item->{$this->name}, $this->value);
+
+        });
     }
 
     protected function applyElasticSearchFilter(ElasticSearchModel $dataSource)
     {
-        if ($this->isStrict)
+        if (blank($this->value))
         {
-            $dataSource->query()
-                       ->where($this->name, $this->value);
-        }
-        else
-        {
-            $name = $this->searchInObject ? $this->name . '.*' : $this->name;
-            $dataSource->query()
-                       ->matchSubString($name, $this->value);
+            return $dataSource;
         }
 
-        return $dataSource;
+        if ($this->isStrict)
+        {
+            return $dataSource->query()
+                       ->where($this->name, $this->value);
+        }
+
+        $name = $this->searchInObject ? null : $this->name;
+
+        return $dataSource->query()
+                   ->matchSubString($this->value, $name);
+
     }
 }

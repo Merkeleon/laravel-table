@@ -94,12 +94,12 @@ abstract class Filter
 
     protected function prepareCast()
     {
-        if (in_array($this->cast, ['int', 'integer']))
+        if (!blank($this->value) && in_array($this->cast, ['int', 'integer']))
         {
             $this->value = (int)$this->value;
         }
 
-        if (in_array($this->cast, ['str', 'string']))
+        if (!blank($this->value) && in_array($this->cast, ['str', 'string']))
         {
             $this->value = (string)$this->value;
         }
@@ -107,7 +107,7 @@ abstract class Filter
 
     public function applyFilter($dataSource)
     {
-        if (!$this->value)
+        if (blank($this->value))
         {
             return $dataSource;
         }
@@ -182,7 +182,7 @@ abstract class Filter
             return count($value) ? true : false;
         }
 
-        return $this->value ? true : false;
+        return blank($this->value) ? false : true;
     }
 
     public function viewPath($viewPath)
@@ -252,10 +252,9 @@ abstract class Filter
         return view('table::' . $this->theme . '.' . $this->viewPath, [
             'name'       => $this->preparedName(),
             'label'      => $this->label,
-            'value'      => $this->value,
+            'value'      => request()->get('f_' . $this->name),
             'attributes' => $this->attributes,
             'error'      => $this->error,
         ]);
     }
-
 }

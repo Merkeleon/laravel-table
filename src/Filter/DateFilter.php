@@ -34,16 +34,16 @@ class DateFilter extends Filter
 
     protected function applyEloquentFilter($dataSource)
     {
-        if ($from = array_get($this->value, 'from'))
+        if ($preparedFrom = $this->getPreparedFrom())
         {
             $dataSource = $dataSource->where(DB::raw('DATE_FORMAT(' . $dataSource->getModel()
-                                                                                 ->getTable() . '.' . $this->name . ', "%Y-%m-%d")'), '>=', date('Y-m-d', strtotime($from)));
+                                                                                 ->getTable() . '.' . $this->name . ', "%Y-%m-%d %H:%i:%s")'), '>=', $preparedFrom);
         }
 
-        if ($to = array_get($this->value, 'to'))
+        if ($preparedTo = $this->getPreparedTo())
         {
             $dataSource = $dataSource->where(DB::raw('DATE_FORMAT(' . $dataSource->getModel()
-                                                                                 ->getTable() . '.' . $this->name . ', "%Y-%m-%d")'), '<=', date('Y-m-d', strtotime($to)));
+                                                                                 ->getTable() . '.' . $this->name . ', "%Y-%m-%d %H:%i:%s")'), '<=', $preparedTo);
         }
 
         return $dataSource;
@@ -51,14 +51,14 @@ class DateFilter extends Filter
 
     protected function applyCollectionFilter($dataSource)
     {
-        if ($from = array_get($this->value, 'from'))
+        if ($from = $this->getPreparedFrom())
         {
             $dataSource = $dataSource->filter(function ($item, $key) use ($from) {
                 return strtotime($item->{$this->name}) >= strtotime($from);
             });
         }
 
-        if ($to = array_get($this->value, 'to'))
+        if ($to = $this->getPreparedTo())
         {
             $dataSource = $dataSource->filter(function ($item, $key) use ($to) {
                 return strtotime($item->{$this->name}) <= strtotime($to);
@@ -102,8 +102,8 @@ class DateFilter extends Filter
 
     protected function applyElasticSearchFilter(ElasticSearchModel $dataSource)
     {
-        $from = $this->prepareDate(array_get($this->value, 'from'));
-        $to   = $this->prepareDate(array_get($this->value, 'to'));
+        $from = $this->getPreparedFrom(get_class($dataSource)::$dateTimeFormat);
+        $to   = $this->getPreparedTo(get_class($dataSource)::$dateTimeFormat);
 
         $dataSource->query()
                    ->range($this->name, $from, $to);
@@ -111,13 +111,37 @@ class DateFilter extends Filter
         return $dataSource;
     }
 
-    protected function prepareDate($value)
+    protected function getPreparedFrom($format = 'Y-m-d H:i:s')
+    {
+        $from = array_get($this->value, 'from');
+
+        if (!$from)
+        {
+            return null;
+        }
+
+        return $this->prepareDate($from . '00:00:00', $format);
+    }
+
+    protected function getPreparedTo($format = 'Y-m-d H:i:s')
+    {
+        $to = array_get($this->value, 'to');
+
+        if (!$to)
+        {
+            return null;
+        }
+
+        return $this->prepareDate($to . '23:59:59', $format);
+    }
+
+    protected function prepareDate($value, $format)
     {
         if (!$value)
         {
             return null;
         }
 
-        return (new Carbon($value))->format($this->dateFormat);
+        return (new Carbon($value, config('view.timezone')))->timezone(config('app.timezone'))->format($format);
     }
 }

@@ -5,7 +5,6 @@ namespace Merkeleon\Table;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
 use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 use Merkeleon\Table\Exporter\JobExporter;
 

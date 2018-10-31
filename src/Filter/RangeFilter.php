@@ -107,7 +107,7 @@ class RangeFilter extends Filter
     protected function applyElasticSearchFilter(ElasticSearchModel $dataSource)
     {
         $from = $this->prepareRangeValue(array_get($this->value, 'from'));
-        $to   = $this->prepareRangeValue(array_get($this->value, 'from'));
+        $to   = $this->prepareRangeValue(array_get($this->value, 'to'));
 
         $dataSource->query()
                    ->range($this->name, $from, $to);
