@@ -77,14 +77,29 @@ class StringFilter extends Filter
 
         if ($this->isStrict)
         {
-            return $dataSource->query()
-                       ->where($this->name, $this->value);
+            $this->applyStrictStringElasticFilter($dataSource);
+
+            return $dataSource;
         }
 
+        $this->applySubStringElasticFilter($dataSource);
+
+        return $dataSource;
+
+    }
+
+    protected function applyStrictStringElasticFilter(ElasticSearchModel $dataSource)
+    {
+        $dataSource->query()
+                   ->where($this->name, $this->value);
+    }
+
+    protected function applySubStringElasticFilter(ElasticSearchModel $dataSource)
+    {
         $name = $this->searchInObject ? null : $this->name;
 
         return $dataSource->query()
-                   ->matchSubString($this->value, $name);
+                          ->matchSubString($this->value, $name);
 
     }
 }
