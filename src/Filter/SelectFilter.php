@@ -70,6 +70,8 @@ class SelectFilter extends Filter
     public function addEmptyFirst($trans = '')
     {
         $this->emptyFirst = $trans;
+        
+        return $this;
     }
 
     public function render()
