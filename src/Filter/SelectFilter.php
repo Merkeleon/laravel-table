@@ -11,6 +11,7 @@ class SelectFilter extends Filter
 
     protected $options  = [];
     protected $viewPath = 'filters.select';
+    protected $emptyFirst = false;
 
     public function params($params)
     {
@@ -66,8 +67,18 @@ class SelectFilter extends Filter
         return $this;
     }
 
+    public function addEmptyFirst($trans = '')
+    {
+        $this->emptyFirst = $trans;
+    }
+
     public function render()
     {
+        if ($this->emptyFirst !== false)
+        {
+            $this->options = ['' => $this->emptyFirst] + $this->options;
+        }
+
         $view = parent::render();
 
         return $view->with('options', $this->options);
