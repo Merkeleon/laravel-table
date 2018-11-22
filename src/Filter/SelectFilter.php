@@ -22,22 +22,7 @@ class SelectFilter extends Filter
     {
         if ($this->value)
         {
-            $relations = explode('.', $this->name);
-
-            if (count($relations) == 1)
-            {
-                $field = array_first($relations);
-
-                return $dataSource->where($field, '=', $this->value);
-            }
-            else
-            {
-                $relation = array_shift($relations);
-
-                return $dataSource->whereHas($relation, function ($query) use ($relations) {
-                    return $this->callbackFilter($query, $relations);
-                });
-            }
+            return $dataSource->where($this->name, '=', $this->value);
         }
 
         return $dataSource;
@@ -70,7 +55,7 @@ class SelectFilter extends Filter
     public function addEmptyFirst($trans = '')
     {
         $this->emptyFirst = $trans;
-        
+
         return $this;
     }
 
