@@ -4,9 +4,9 @@ return [
     'batch.action.all'      => 'Со всеми',
     'batch.labels.delete'   => 'Удалить',
     'button.filter'         => 'Фильтровать',
-    'button.reset'          => 'Очистить форму',
+    'button.reset'          => 'Сбросить',
     'button.export-to'      => 'Экспортировать в :format',
-    'button.batch'          => 'Выполнить',
+    'button.batch'          => 'Добавить в пакет',
     'filter.date.from'      => 'От',
     'filter.date.to'        => 'До',
     'filter.range.from'     => 'От',
@@ -16,5 +16,5 @@ return [
     'total.sum'             => '(сумма)',
     'total.count'           => '(кол-во)',
     'total.callback'        => '',
-    'row.empty'             => 'Нет данных'
+    'row.empty'             => 'Данные не найдены',
 ];

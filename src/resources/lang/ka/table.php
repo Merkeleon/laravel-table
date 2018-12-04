@@ -16,5 +16,5 @@ return [
     'total.sum'             => '(ჯამი)',
     'total.count'           => '(რაოდენობა)',
     'total.callback'        => '',
-    'row.empty'             => 'ინფორმაცია არ არის'
+    'row.empty'             => 'ინფორმაცია არ არის',
 ];
