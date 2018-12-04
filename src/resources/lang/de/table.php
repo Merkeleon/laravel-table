@@ -17,5 +17,5 @@ return [
     'total.sum'             => '(Gesamtbetrag)',
     'total.count'           => '(Anzahl)',
     'total.callback'        => '',
-    'row.empty'             => 'Keine Daten'
+    'row.empty'             => 'Keine Angaben',
 ];

@@ -16,4 +16,5 @@ return [
     'total.sum'             => '（总和）',
     'total.count'           => '（计数）',
     'total.callback'        => '',
+    'row.empty'             => '无数据',
 ];

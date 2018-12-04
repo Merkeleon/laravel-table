@@ -8,7 +8,7 @@ return [
     'button.reset'          => 'Visszaállít',
     'button.export-to'      => 'Exportálás :format',
     'button.batch'          => 'Köteg',
-    'filter.date.from'      => 'Innen',
+    'filter.date.from'      => 'Ettől',
     'filter.date.to'        => 'Eddig',
     'filter.range.from'     => 'Ettől',
     'filter.range.to'       => 'Eddig',
@@ -17,5 +17,5 @@ return [
     'total.sum'             => '(összeg)',
     'total.count'           => '(számolás)',
     'total.callback'        => '',
-    'row.empty'             => 'Nincs adat'
+    'row.empty'             => 'Nincs adat',
 ];
