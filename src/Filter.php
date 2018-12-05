@@ -2,6 +2,7 @@
 
 namespace Merkeleon\Table;
 
+use Merkeleon\Log\LogRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
@@ -125,6 +126,11 @@ abstract class Filter
         if ($dataSource instanceof ElasticSearchModel)
         {
             return $this->applyElasticSearchFilter($dataSource);
+        }
+
+        if ($dataSource instanceof LogRepository)
+        {
+             $this->applyLogRepositoryFilter($dataSource);
         }
 
         return $dataSource;

@@ -3,6 +3,7 @@
 
 namespace Merkeleon\Table\Filter;
 
+use Merkeleon\Log\LogRepository;
 use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 
 
@@ -38,6 +39,16 @@ class MultiSelectFilter extends SelectFilter
         if ($this->value) {
             $dataSource->query()
                        ->whereIn($this->name, $this->value);
+        }
+
+        return $dataSource;
+    }
+
+    protected function applyLogRepositoryFilter(LogRepository $dataSource)
+    {
+        if ($this->value)
+        {
+            return $dataSource->whereIn($this->name, $this->value);
         }
 
         return $dataSource;

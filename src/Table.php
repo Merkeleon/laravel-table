@@ -3,6 +3,7 @@
 namespace Merkeleon\Table;
 
 
+use Merkeleon\Log\LogRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
@@ -212,7 +213,7 @@ class Table
 
     protected function prepareTotals()
     {
-        if ($this->dataSource instanceof ElasticSearchModel)
+        if ($this->dataSource instanceof ElasticSearchModel || $this->dataSource instanceof LogRepository)
         {
             return;
         }
@@ -255,7 +256,7 @@ class Table
         {
             if ($filter->validate())
             {
-                $this->dataSource = $filter->applyFilter($this->dataSource);
+                $filter->applyFilter($this->dataSource);
             }
             if ($filter->isActive())
             {
@@ -297,6 +298,13 @@ class Table
             return;
         }
 
+        if ($this->dataSource instanceof LogRepository)
+        {
+            $this->sortDataSourceLogRepository();
+
+            return;
+        }
+
         throw new Exception('Not supported dataSource');
 
     }
@@ -322,6 +330,11 @@ class Table
     {
         $this->dataSource->query()
                          ->sort($this->orderField . ':' . $this->orderDirection);
+    }
+
+    protected function sortDataSourceLogRepository()
+    {
+        $this->dataSource->orderBy($this->orderField, $this->orderDirection);
     }
 
     public function row($viewPath)

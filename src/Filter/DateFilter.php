@@ -2,6 +2,7 @@
 
 namespace Merkeleon\Table\Filter;
 
+use Merkeleon\Log\LogRepository;
 use Carbon\Carbon;
 use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 use Merkeleon\Table\Filter;
@@ -107,6 +108,16 @@ class DateFilter extends Filter
 
         $dataSource->query()
                    ->range($this->name, $from, $to);
+
+        return $dataSource;
+    }
+
+    protected function applyLogRepositoryFilter(LogRepository $dataSource)
+    {
+        $from = $this->getPreparedFrom($dataSource->getDateFormat());
+        $to   = $this->getPreparedTo( $dataSource->getDateFormat());
+
+        $dataSource->range($this->name, $from, $to);
 
         return $dataSource;
     }
