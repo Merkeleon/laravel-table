@@ -213,7 +213,7 @@ class Table
 
     protected function prepareTotals()
     {
-        if ($this->dataSource instanceof ElasticSearchModel || $this->dataSource instanceof LogRepository)
+        if ($this->dataSource instanceof ElasticSearchModel)
         {
             return;
         }
