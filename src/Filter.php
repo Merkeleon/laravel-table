@@ -106,6 +106,16 @@ abstract class Filter
         }
     }
 
+    public function setValue($value, $force = false)
+    {
+        if (empty($this->value) || $force)
+        {
+            $this->value = $value;
+        }
+
+        return $this;
+    }
+
     public function applyFilter($dataSource)
     {
         if (blank($this->value))
