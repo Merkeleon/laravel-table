@@ -2,6 +2,7 @@
 
 namespace Merkeleon\Table\Filter;
 
+use Merkeleon\Log\LogRepository;
 use Merkeleon\Table\Filter;
 use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
 
@@ -75,6 +76,13 @@ class SelectFilter extends Filter
     {
         $dataSource->query()
                    ->where($this->name, $this->value);
+
+        return $dataSource;
+    }
+
+    protected function applyLogRepositoryFilter(LogRepository $dataSource)
+    {
+        $dataSource->where($this->name, $this->value);
 
         return $dataSource;
     }

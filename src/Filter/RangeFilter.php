@@ -3,6 +3,7 @@
 namespace Merkeleon\Table\Filter;
 
 use Merkeleon\ElasticReader\Elastic\SearchModel as ElasticSearchModel;
+use Merkeleon\Log\LogRepository;
 use Merkeleon\Table\Filter;
 
 
@@ -111,6 +112,16 @@ class RangeFilter extends Filter
 
         $dataSource->query()
                    ->range($this->name, $from, $to);
+
+        return $dataSource;
+    }
+
+    protected function applyLogRepositoryFilter(LogRepository $dataSource)
+    {
+        $from = $this->prepareRangeValue(array_get($this->value, 'from'));
+        $to   = $this->prepareRangeValue(array_get($this->value, 'to'));
+
+        $dataSource->range($this->name, $from, $to);
 
         return $dataSource;
     }
