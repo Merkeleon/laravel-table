@@ -9,7 +9,7 @@ return [
     'button.export-to'      => 'Exportar a :format',
     'button.batch'          => 'Lote',
     'filter.date.from'      => 'De',
-    'filter.date.to'        => 'Hasta',
+    'filter.date.to'        => 'A',
     'filter.range.from'     => 'De',
     'filter.range.to'       => 'A',
     'pagination.from'       => 'de',
