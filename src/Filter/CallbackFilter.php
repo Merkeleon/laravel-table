@@ -11,11 +11,12 @@ namespace Merkeleon\Table\Filter;
 
 use Closure;
 use Merkeleon\Table\Filter;
+use Opis\Closure\SerializableClosure;
 
 class CallbackFilter extends Filter
 {
     protected $viewPath = 'filters.callback';
-    /** @var Closure $callback */
+    /** @var SerializableClosure $callback */
     protected $callback = null;
 
     protected function prepare()
@@ -27,7 +28,8 @@ class CallbackFilter extends Filter
     {
         if (is_callable($this->callback))
         {
-            $this->callback->call($this, $dataSource, $this->value);
+            $this->callback->getClosure()
+                           ->call($this, $dataSource, $this->value);
         }
 
         return $dataSource;
@@ -35,6 +37,8 @@ class CallbackFilter extends Filter
 
     public function setCallback(Closure $callback)
     {
+        $callback = new SerializableClosure($callback);
+
         $this->callback = $callback;
 
         return $this;
