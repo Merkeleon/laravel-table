@@ -27,5 +27,8 @@
     "psr-4": {
       "Merkeleon\\Table\\": "src/"
     }
+  },
+  "config": {
+    "preferred-install": "dist"
   }
 }

@@ -13,6 +13,8 @@ abstract class Filter
     protected $value;
     protected $viewPath;
     protected $attributes = [];
+    protected $validators = '';
+    protected $error;
 
     public static function make($type, $name)
     {
@@ -110,6 +112,13 @@ abstract class Filter
         return $this;
     }
 
+    public function validators($validators)
+    {
+        $this->validators = $validators;
+
+        return $this;
+    }
+
     public function theme($theme)
     {
         $this->theme = $theme;
@@ -163,6 +172,34 @@ abstract class Filter
         return $this;
     }
 
+    public function validate()
+    {
+        if (!$this->value)
+        {
+            return true;
+        }
+
+        $key = 'f_' . $this->name;
+
+        $validator = validator(request()->all(), [
+            $key => $this->validators,
+        ], [], [
+            $key => $this->label
+        ]);
+
+        if ($validator->fails())
+        {
+            $errors = $validator->errors()
+                                ->toArray();
+
+            $this->error = $errors['f_' . $this->name][0] ?? null;
+
+            return false;
+        }
+
+        return true;
+    }
+
     public function render()
     {
         return view('table::' . $this->theme . '.' . $this->viewPath, [
@@ -170,6 +207,7 @@ abstract class Filter
             'label'      => $this->label,
             'value'      => $this->value,
             'attributes' => $this->attributes,
+            'error'      => $this->error,
         ]);
     }
 
