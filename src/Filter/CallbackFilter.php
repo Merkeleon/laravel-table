@@ -18,6 +18,8 @@ class CallbackFilter extends Filter
     protected $viewPath = 'filters.callback';
     /** @var SerializableClosure $callback */
     protected $callback = null;
+    protected $options  = [];
+    protected $emptyFirst = false;
 
     protected function prepare()
     {
@@ -42,5 +44,31 @@ class CallbackFilter extends Filter
         $this->callback = $callback;
 
         return $this;
+    }
+
+    public function options($options)
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    public function addEmptyFirst($trans = '')
+    {
+        $this->emptyFirst = $trans;
+
+        return $this;
+    }
+
+    public function render()
+    {
+        if ($this->emptyFirst !== false)
+        {
+            $this->options = ['' => $this->emptyFirst] + $this->options;
+        }
+
+        $view = parent::render();
+
+        return $view->with('options', $this->options);
     }
 }
