@@ -15,7 +15,6 @@
     "laravel/framework": "~5.6",
     "doctrine/dbal": "~2.3",
     "maatwebsite/excel": "^3.0",
-    "merkeleon/laravel-elastic-reader": "dev-master",
     "opis/closure": "^3.1"
   },
   "extra": {
