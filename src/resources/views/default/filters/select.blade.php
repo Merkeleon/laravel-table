@@ -6,7 +6,7 @@
             class="form-control">
                 <option></option>
                 @foreach ($options as $key => $option)
-                    <option value="{{$key}}" @if ($value == $key) selected @endif>{{$option}}</option>
+                    <option value="{{$key}}" @if (strval($value) === strval($key)) selected @endif>{{$option}}</option>
                 @endforeach
             </select>
             <span class="error">{{$error}}</span>

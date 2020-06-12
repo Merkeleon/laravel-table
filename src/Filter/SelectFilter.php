@@ -54,7 +54,7 @@ class SelectFilter extends Filter
 
     public function applyFilter($model)
     {
-        if ($this->value)
+        if ($this->value !== '')
         {
             $relations = explode('.', $this->name);
 
@@ -81,5 +81,10 @@ class SelectFilter extends Filter
         $view = parent::render();
 
         return $view->with('options', $this->options);
+    }
+
+    public function isActive()
+    {
+        return $this->value !== '' ? true : false;
     }
 }
